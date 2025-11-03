@@ -9,11 +9,17 @@
 
     @livewireStyles
 </head>
-<body>
-    <main>
+<body class="font-sans bg-[#252525] text-[#d4d4d4]">
+    @livewire("header")
+    @livewire("nav")
+    
+    <main class="container mx-auto px-4 py-8">
         @yield("main")
     </main>
 
+    @livewire("footer")
+    
     @livewireScripts
+
 </body>
 </html>
