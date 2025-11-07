@@ -21,11 +21,49 @@ class AuthController extends Controller
 
     public function registerPost(Request $req)
     {
-        
+        $data = $req->validate([
+            "name" => ["required", "string"],
+            "email" => ["required", "email", "unique:users,email"],
+            "password" => ["required", "min:8", "confirmed"]
+        ]);
+
+        $data["password"] = Hash::make($data["password"]);
+
+        User::create($data);
+
+        return redirect()->route("login");
     }
 
     public function loginPost(Request $req)
     {
-        
+        $data = $req->validate([
+            "email" => ["required", "email", ],
+            "password" => ["required"]
+        ]);
+
+        $remember = $req->has('remember');
+
+        if (Auth::attempt($data, $remember)) 
+        {
+            $req->session()->regenerate();
+
+            return redirect()->route("profile");
+        }
+        else
+        {
+            return back()->withErrors([
+                "email" => "Email/Paasword invalid"
+            ]);
+        }
+    }
+
+    public function logout(Request $req)
+    {
+        Auth::logout();
+
+        $req->session()->invalidate();
+        $req->session()->regenerateToken();
+
+        return redirect()->route("landing");
     }
 }
