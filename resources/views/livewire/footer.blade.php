@@ -1,4 +1,4 @@
-<footer class="bg-gray-900 border-t border-gray-800 py-12">
+<footer class="bg-[#182023] border-t border-gray-800 py-12">
     <div class="container mx-auto px-4">
         <div class="grid md:grid-cols-4 gap-8">
             <!-- Brand -->
@@ -75,7 +75,7 @@
         
         <div class="border-t border-gray-800 mt-8 pt-8 text-center">
             <p class="text-gray-400 text-sm">
-                &copy; 2024 EduLMS. All rights reserved. Crafted with ❤️ by Matei Patric
+                &copy; 2025 EduLMS. All rights reserved. Crafted with ❤️ by Matei Patric
             </p>
         </div>
     </div>

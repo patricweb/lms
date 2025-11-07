@@ -2,21 +2,21 @@
 
 @section("main")
     <!-- Hero Section -->
-    <section class="relative bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 py-20 overflow-hidden">
+    <section class="relative bg-[#182023] py-20 overflow-hidden">
         <div class="absolute inset-0 bg-grid-white/[0.02] bg-[size:60px_60px]"></div>
         <div class="container mx-auto px-4 relative">
             <div class="max-w-4xl mx-auto text-center">
-                <h1 class="text-5xl md:text-7xl font-bold mb-6 bg-gradient-to-r from-emerald-400 via-green-400 to-purple-500 bg-clip-text text-transparent leading-tight">
+                <h1 class="text-5xl md:text-7xl font-bold mb-6 bg-[#7cdebe] bg-clip-text text-transparent leading-tight">
                     Transform Your Learning Journey
                 </h1>
                 <p class="text-xl text-gray-300 mb-8 max-w-2xl mx-auto leading-relaxed">
                     Discover the future of education with our modern LMS platform. Engage, learn, and grow with interactive courses powered by cutting-edge technology.
                 </p>
                 <div class="flex flex-col sm:flex-row gap-4 justify-center items-center">
-                    <a href="{{ route('register') }}" class="bg-emerald-500 hover:bg-emerald-600 text-white font-bold px-8 py-4 rounded-xl transition-all duration-200 transform hover:scale-105 shadow-lg hover:shadow-emerald-500/25 text-lg">
+                    <a href="{{ route('register') }}" class="bg-[#39bd92] hover:bg-[#35ad85] text-[#f4f4f4] font-bold px-8 py-4 rounded-xl transition-all duration-200 transform hover:scale-105 shadow-lg hover:shadow-emerald-500/25 text-lg">
                         Start Learning Free
                     </a>
-                    <a href="#features" class="border-2 border-emerald-400 text-emerald-400 hover:bg-emerald-400 hover:text-white font-bold px-8 py-4 rounded-xl transition-all duration-200 transform hover:scale-105 text-lg">
+                    <a href="#features" class="border-2 border-[#39bd92] text-[#39bd92] hover:bg-emerald-400 hover:text-[#f4f4f4] font-bold px-8 py-4 rounded-xl transition-all duration-200 transform hover:scale-105 text-lg">
                         Explore Features
                     </a>
                 </div>
@@ -24,15 +24,15 @@
                 <!-- Stats -->
                 <div class="grid grid-cols-3 gap-8 mt-16 max-w-2xl mx-auto">
                     <div class="text-center">
-                        <div class="text-3xl font-bold text-emerald-400">10K+</div>
+                        <div class="text-3xl font-bold text-emerald-500">10K+</div>
                         <div class="text-gray-400">Students</div>
                     </div>
                     <div class="text-center">
-                        <div class="text-3xl font-bold text-green-400">500+</div>
+                        <div class="text-3xl font-bold text-emerald-500">500+</div>
                         <div class="text-gray-400">Courses</div>
                     </div>
                     <div class="text-center">
-                        <div class="text-3xl font-bold text-purple-400">98%</div>
+                        <div class="text-3xl font-bold text-emerald-500">98%</div>
                         <div class="text-gray-400">Satisfaction</div>
                     </div>
                 </div>
@@ -41,7 +41,7 @@
     </section>
 
     <!-- Features Section -->
-    <section id="features" class="py-20 bg-gray-800">
+    <section id="features" class="py-20 bg-[#182023]">
         <div class="container mx-auto px-4">
             <div class="text-center mb-16">
                 <h2 class="text-4xl md:text-5xl font-bold mb-4 bg-gradient-to-r from-emerald-400 to-green-400 bg-clip-text text-transparent">
@@ -54,8 +54,8 @@
             
             <div class="grid md:grid-cols-3 gap-8">
                 <!-- Feature 1 -->
-                <div class="bg-gray-900 p-8 rounded-2xl border border-gray-700 hover:border-emerald-400 transition-all duration-300 hover:transform hover:-translate-y-2 group">
-                    <div class="w-14 h-14 bg-emerald-500 rounded-xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300">
+                <div class="bg-gray-900 p-8 rounded-2xl border border-gray-700 hover:border-purple-400 transition-all duration-300 hover:transform hover:-translate-y-2 group">
+                    <div class="w-14 h-14 bg-purple-500 rounded-xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300">
                         <svg class="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                         </svg>
@@ -76,8 +76,8 @@
                 </div>
 
                 <!-- Feature 3 -->
-                <div class="bg-gray-900 p-8 rounded-2xl border border-gray-700 hover:border-green-400 transition-all duration-300 hover:transform hover:-translate-y-2 group">
-                    <div class="w-14 h-14 bg-green-500 rounded-xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300">
+                <div class="bg-gray-900 p-8 rounded-2xl border border-gray-700 hover:border-purple-400 transition-all duration-300 hover:transform hover:-translate-y-2 group">
+                    <div class="w-14 h-14 bg-purple-500 rounded-xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300">
                         <svg class="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
                         </svg>
@@ -90,7 +90,7 @@
     </section>
 
     <!-- Courses Section -->
-    <section id="courses" class="py-20 bg-gray-900">
+    <section id="courses" class="py-20 bg-[#182023]">
         <div class="container mx-auto px-4">
             <div class="text-center mb-16">
                 <h2 class="text-4xl md:text-5xl font-bold mb-4 bg-gradient-to-r from-green-400 to-emerald-400 bg-clip-text text-transparent">
@@ -131,8 +131,8 @@
     </section>
 
     <!-- CTA Section -->
-    <section class="py-20 bg-gradient-to-r from-emerald-600 via-green-600 to-purple-600 relative overflow-hidden">
-        <div class="absolute inset-0 bg-black/20"></div>
+    <section class="py-20 bg-[#182023] relative overflow-hidden">
+        <div class="absolute inset-0"></div>
         <div class="container mx-auto px-4 text-center relative">
             <h2 class="text-4xl md:text-6xl font-bold mb-6 text-white">
                 Ready to Transform Your Future?

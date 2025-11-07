@@ -1,18 +1,18 @@
-<header class="bg-gray-900 border-b border-gray-700 sticky top-0 z-50">
+<header class="bg-[#182023] border-b border-gray-700 sticky top-0 z-50">
     <div class="container mx-auto px-4 py-4">
         <div class="flex justify-between items-center">
             <!-- Logo -->
             <div class="flex items-center space-x-3">
                 <a href="{{ route('landing') }}" class="flex items-center space-x-3 no-underline">
-                    <div class="w-10 h-10 bg-emerald-500 rounded-lg flex items-center justify-center shadow-lg">
-                        <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <div class="w-10 h-10 bg-[#3acf9e] rounded-lg flex items-center justify-center shadow-lg">
+                        <svg class="w-6 h-6 text-[#e2e2e2]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 14l9-5-9-5-9 5 9 5z"></path>
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 14l9-5-9-5-9 5 9 5z"></path>
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 14v6l9-5m-9 5l-9-5m9 5v-6"></path>
                         </svg>
                     </div>
                     <div>
-                        <h1 class="text-2xl font-bold bg-gradient-to-r from-emerald-400 to-green-400 bg-clip-text text-transparent">
+                        <h1 class="text-2xl font-bold bg-[#7cdebe] bg-clip-text text-transparent">
                             EduLMS
                         </h1>
                         <p class="text-xs text-gray-400">by Matei Patric</p>
