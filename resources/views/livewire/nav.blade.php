@@ -2,7 +2,7 @@
     <div class="container mx-auto px-4">
         <div class="flex justify-center space-x-8 py-4">
             <a href="#features" class="text-gray-300 hover:text-emerald-400 transition-colors duration-200 font-medium py-2 hover:border-emerald-400">
-                Success Stories
+                Features
             </a>
             <a href="#courses" class="text-gray-300 hover:text-emerald-400 transition-colors duration-200 font-medium py-2 hover:border-emerald-400">
                 Courses
