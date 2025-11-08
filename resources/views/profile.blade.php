@@ -1,5 +1,9 @@
 @extends("layout")
 
 @section("main")
-    <h1>Profile Page!</h1>
+    <h2>Profile Page!</h2>
+
+    <p>{{ $user->name }}</p>
+    <p>{{ $user->email }}</p>
+    <p>{{ $user->role }}</p>
 @endsection

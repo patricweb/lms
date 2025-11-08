@@ -8,7 +8,7 @@
     @vite(['resources/css/app.css', 'resources/js/search.js'])
     @livewireStyles
 </head>
-<body class="font-sans bg-gray-900 text-gray-100 antialiased">
+<body class="font-sans bg-[#182023] text-[#f4f4f4] antialiased">
     @livewire("header")
     @livewire("nav")
     

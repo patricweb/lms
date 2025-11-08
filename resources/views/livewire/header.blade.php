@@ -4,15 +4,15 @@
             <!-- Logo -->
             <div class="flex items-center space-x-3">
                 <a href="{{ route('landing') }}" class="flex items-center space-x-3 no-underline">
-                    <div class="w-10 h-10 bg-[#3acf9e] rounded-lg flex items-center justify-center shadow-lg">
-                        <svg class="w-6 h-6 text-[#e2e2e2]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <div class="w-10 h-10 bg-emerald-500 rounded-lg flex items-center justify-center shadow-lg">
+                        <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 14l9-5-9-5-9 5 9 5z"></path>
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 14l9-5-9-5-9 5 9 5z"></path>
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 14v6l9-5m-9 5l-9-5m9 5v-6"></path>
                         </svg>
                     </div>
                     <div>
-                        <h1 class="text-2xl font-bold bg-[#7cdebe] bg-clip-text text-transparent">
+                        <h1 class="text-2xl font-bold text-emerald-400">
                             EduLMS
                         </h1>
                         <p class="text-xs text-gray-400">by Matei Patric</p>

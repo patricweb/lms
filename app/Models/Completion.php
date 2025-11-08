@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Completion extends Model
 {
@@ -16,11 +17,12 @@ class Completion extends Model
         'completed_at' => 'datetime'
     ];
 
-    public function user() {
+    public function user(): BelongsTo
+    {
         return $this->belongsTo(User::class);
     }
 
-    public function lesson()
+    public function lesson(): BelongsTo
     {
         return $this->belongsTo(Lesson::class);
     }

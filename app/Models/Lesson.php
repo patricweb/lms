@@ -4,6 +4,8 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Lesson extends Model
 {
@@ -23,17 +25,17 @@ class Lesson extends Model
         'is_free_preview' => 'boolean'
     ];
 
-    public function course() 
+    public function course(): BelongsTo
     {
         return $this->belongsTo(Course::class);
     }
 
-    public function completions()
+    public function completions(): HasMany
     {
         return $this->hasMany(Completion::class);
     }
 
-    public function lessonComments()
+    public function lessonComments(): HasMany
     {
         return $this->hasMany(LessonComment::class);
     }

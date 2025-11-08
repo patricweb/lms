@@ -4,6 +4,8 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Course extends Model
 {
@@ -24,27 +26,27 @@ class Course extends Model
         'price' => 'decimal:2'
     ];
 
-    public function category()
+    public function category(): BelongsTo
     {
         return $this->belongsTo(Category::class);
     }
 
-    public function teacher() 
+    public function teacher(): BelongsTo
     {
         return $this->belongsTo(User::class, 'teacher_id');
     }
 
-    public function lessons()
+    public function lessons(): HasMany
     {
         return $this->hasMany(Lesson::class)->orderBy('order');
     }
 
-    public function quizzes()
+    public function quizzes(): HasMany
     {
         return $this->hasMany(Quiz::class);
     }
 
-    public function courseComments()
+    public function courseComments(): HasMany
     {
         return $this->hasMany(CourseComment::class);
     }

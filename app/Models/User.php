@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class User extends Authenticatable {
 
@@ -20,27 +21,27 @@ class User extends Authenticatable {
         return ['password' => 'hashed'];
     }
 
-    public function courses()
+    public function courses(): HasMany
     { 
         return $this->hasMany(Course::class, 'teacher_id');
     }
 
-    public function completions()
+    public function completions(): HasMany
     { 
         return $this->hasMany(Completion::class); 
     }
 
-    public function quizAttempts() 
+    public function quizAttempts(): HasMany
     { 
         return $this->hasMany(QuizAttempt::class); 
     }
 
-    public function courseComments() 
+    public function courseComments(): HasMany
     { 
         return $this->hasMany(CourseComment::class); 
     }
 
-    public function lessonComments() 
+    public function lessonComments(): HasMany
     { 
         return $this->hasMany(LessonComment::class); 
     }

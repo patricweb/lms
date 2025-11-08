@@ -3,6 +3,8 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Quiz extends Model
 {
@@ -14,17 +16,17 @@ class Quiz extends Model
         'max_attempts'
     ];
 
-    public function course()
+    public function course(): BelongsTo
     {
         return $this->belongsTo(Course::class);
     }
 
-    public function questions()
+    public function questions(): HasMany
     {
         return $this->hasMany(Question::class);
     }
 
-    public function quizAttempts()
+    public function quizAttempts(): HasMany
     {
         return $this->hasMany(QuizAttempt::class);
     }

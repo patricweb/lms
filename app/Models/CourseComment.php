@@ -4,6 +4,8 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class CourseComment extends Model
 {
@@ -16,22 +18,22 @@ class CourseComment extends Model
         'parent_id'
     ];
 
-    public function user()
+    public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
     }
 
-    public function course()
+    public function course(): BelongsTo
     {
         return $this->belongsTo(Course::class);
     }
 
-    public function parent()
+    public function parent(): BelongsTo
     {
         return $this->belongsTo(CourseComment::class, 'parent_id');
     }
 
-    public function replies()
+    public function replies(): HasMany
     {
         return $this->hasMany(CourseComment::class, 'parent_id');
     }
