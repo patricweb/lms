@@ -13,6 +13,16 @@ class GeneralController extends Controller
 
     public function home_page()
     {
-        return view("home-page");
+        return view("general.home-page");
+    }
+
+    public function about()
+    {
+        return view("general.about");
+    }
+
+    public function contacts()
+    {
+        return view("general.contacts");
     }
 }

@@ -17,7 +17,7 @@ class UserController extends Controller
             return redirect('/register');
         }
 
-        return view('profile', ['user' => $user]);
+        return view('users.profile', ['user' => $user]);
     }
 
     public function showUser($id)

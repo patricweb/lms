@@ -11,11 +11,25 @@ class AuthController extends Controller
 {
     public function login()
     {
+        $user = Auth::user();
+
+        if($user)
+        {
+            return redirect()->route("profile");
+        }
+
         return view('auth.login');
     }
 
     public function register()
     {
+        $user = Auth::user();
+
+        if($user)
+        {
+            return redirect()->route("profile");
+        }
+
         return view('auth.register');
     }
 

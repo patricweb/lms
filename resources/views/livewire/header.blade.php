@@ -1,8 +1,8 @@
 <header class="bg-[#182023] border-b border-gray-700 sticky top-0 z-50">
     <div class="container mx-auto px-4 py-4">
-        <div class="flex justify-between items-center">
+        <div class="flex items-center justify-between">
             <!-- Logo -->
-            <div class="flex items-center space-x-3">
+            <div class="flex items-center space-x-3 flex-shrink-0">
                 <a href="{{ route('landing') }}" class="flex items-center space-x-3 no-underline">
                     <div class="w-10 h-10 bg-emerald-500 rounded-lg flex items-center justify-center shadow-lg">
                         <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -20,8 +20,27 @@
                 </a>
             </div>
 
+            <!-- Search Bar - Центрированный -->
+            <div class="flex-1 flex justify-center px-6">
+                <div class="w-full max-w-md">
+                    <div class="flex items-center bg-[#1e2a2e] border border-gray-700 rounded-full px-4 py-2 shadow-inner focus-within:ring-2 focus-within:ring-emerald-500 transition-all duration-200">
+                    <input
+                        id="search"
+                        type="text"
+                        placeholder="Search courses, materials..."
+                        class="w-full bg-transparent outline-none text-gray-200 placeholder-gray-500 text-sm"
+                    />
+                    <button
+                        class="ml-2 p-2 bg-emerald-600 hover:bg-emerald-500 rounded-full transition-all duration-200 flex items-center justify-center shadow-md"
+                    >
+                        <x-css-search class="h-5 w-5 text-white" />
+                    </button>
+                    </div>
+                </div>
+            </div>
+
             <!-- Navigation -->
-            <nav>
+            <nav class="flex-shrink-0">
                 <ul class="flex items-center space-x-6">
                     @auth
                         <li>
@@ -33,7 +52,7 @@
                             </a>
                         </li>
                         <li>
-                            <a class="flex items-center space-x-2 text-gray-300 hover:text-orange-400 transition-colors duration-200 font-medium group" href="{{ route('logout') }}">
+                            <a class="flex items-center space-x-2 text-gray-300 hover:text-purple-500 transition-colors duration-200 font-medium group" href="{{ route('logout') }}">
                                 <svg class="w-5 h-5 group-hover:scale-110 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path>
                                 </svg>
