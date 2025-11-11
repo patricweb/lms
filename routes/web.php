@@ -5,6 +5,7 @@ use App\Http\Controllers\GeneralController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\AdminController;
+use App\Http\Controllers\CourseController;
 
 Route::get("/", [GeneralController::class, "landing"])->name("landing");
 
@@ -13,6 +14,10 @@ Route::get("/home", [GeneralController::class, "home_page"])->name("home");
 Route::get("/about", [GeneralController::class, "about"])->name('about');
 
 Route::get("/contacts", [GeneralController::class, "contacts"])->name("contacts");
+
+Route::get("/features", [GeneralController::class, "features"])->name("features");
+
+Route::get("/pricing", [GeneralController::class, "pricing"])->name("pricing");
 
 Route::get("/profile", [UserController::class, "profile"])->name("profile");
 
@@ -29,5 +34,7 @@ Route::get("/logout", [AuthController::class, "logout"])->name("logout");
 Route::get("/show-user/{id}", [UserController::class, "showUser"])->name("userShow");
 
 Route::get("/admin", [AdminController::class, 'admin'])->name("admin");
+
+Route::get('/courses', [CourseController::class, 'courses'])->name("courses");
 
 Route::fallback(function () { return response()->view('errors.404', [], 404); });

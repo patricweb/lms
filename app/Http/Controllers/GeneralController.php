@@ -25,4 +25,14 @@ class GeneralController extends Controller
     {
         return view("general.contacts");
     }
+
+    public function features()
+    {
+        return view("general.features");
+    }
+
+    public function pricing()
+    {
+        return view("general.pricing");
+    }
 }

@@ -25,6 +25,11 @@ class Lesson extends Model
         'is_free_preview' => 'boolean'
     ];
 
+    public function module(): BelongsTo
+    {
+        return $this->belongsTo(Module::class);
+    }
+
     public function course(): BelongsTo
     {
         return $this->belongsTo(Course::class);

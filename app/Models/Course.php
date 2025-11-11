@@ -26,6 +26,11 @@ class Course extends Model
         'price' => 'decimal:2'
     ];
 
+    public function modules(): HasMany 
+    {
+        return $this->hasMany(Module::class)->orderBy('order');
+    }
+
     public function category(): BelongsTo
     {
         return $this->belongsTo(Category::class);
