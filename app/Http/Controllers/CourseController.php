@@ -4,28 +4,29 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use App\Models\Course;
+use App\Models\Category;
 
 class CourseController extends Controller
 {
     public function courses()
     {
         $user = Auth::user();
-
-        if(!$user)
+        if (!$user) 
         {
             return redirect('/register');
         }
 
-        if (auth()->user()->role === 'admin') 
+        $query = Course::with(['category', 'teacher']);
+
+        if ($request->$search)
         {
-            return view('courses.admin');
+            $query->where('title', 'like', '%' . $request->search . '%');
         }
-        elseif (auth()->user()->role === 'teacher')
+        
+        if ($request->category_id)
         {
-            return view('courses.teacher');
-        }
-        else{
-            return view('courses.student');
+            $query->where('category_id', $request->category_id);
         }
     }
 }

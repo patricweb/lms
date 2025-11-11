@@ -57,9 +57,6 @@
                     <h3 class="text-2xl font-semibold mb-3 text-white">Interactive Learning</h3>
                     <p class="text-gray-300 leading-relaxed">Engage with interactive content, real-time quizzes, and instant feedback to maximize your learning potential.</p>
                     <!-- small accent -->
-                    <div class="mt-4">
-                        <span class="inline-block text-sm font-medium text-[#7cdebe]">Hands-on</span>
-                    </div>
                 </div>
 
                 <!-- Feature 2 -->
@@ -71,9 +68,6 @@
                     </div>
                     <h3 class="text-2xl font-semibold mb-3 text-white">Expert Instructors</h3>
                     <p class="text-gray-300 leading-relaxed">Learn from industry professionals and experienced educators who are passionate about your success.</p>
-                    <div class="mt-4">
-                        <span class="inline-block text-sm text-gray-400">Verified experts</span>
-                    </div>
                 </div>
 
                 <!-- Feature 3 -->
@@ -85,9 +79,6 @@
                     </div>
                     <h3 class="text-2xl font-semibold mb-3 text-white">Flexible Schedule</h3>
                     <p class="text-gray-300 leading-relaxed">Learn at your own pace with 24/7 access to all courses and materials from any device, anywhere.</p>
-                    <div class="mt-4">
-                        <span class="inline-block text-sm text-gray-400">Self-paced</span>
-                    </div>
                 </div>
             </div>
         </div>
