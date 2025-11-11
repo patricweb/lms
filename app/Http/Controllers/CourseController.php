@@ -9,7 +9,7 @@ use App\Models\Category;
 
 class CourseController extends Controller
 {
-    public function courses()
+    public function courses(Request $request)
     {
         $user = Auth::user();
         if (!$user) 
