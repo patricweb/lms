@@ -6,7 +6,6 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Module extends Model {
-    use HasFactory;
 
     protected $fillable = [
         'course_id',

@@ -2,7 +2,7 @@
     <div class="container mx-auto px-4 py-4">
         <div class="flex items-center justify-between">
             <!-- Logo -->
-            <div class="flex items-center space-x-3 flex-shrink-0">
+            <div class="flex items-center space-x-3 shrink-0">
                 <a href="{{ route('landing') }}" class="flex items-center space-x-3 no-underline">
                     <div class="w-10 h-10 bg-emerald-500 rounded-lg flex items-center justify-center shadow-lg">
                         <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -24,23 +24,23 @@
             <div class="flex-1 flex justify-center px-6">
                 <div class="w-full max-w-md">
                     <div class="flex items-center bg-[#1e2a2e] border border-gray-700 rounded-full px-4 py-2 shadow-inner focus-within:ring-2 focus-within:ring-emerald-500 transition-all duration-200">
-                    <input
-                        id="search"
-                        type="text"
-                        placeholder="Search courses, materials..."
-                        class="w-full bg-transparent outline-none text-gray-200 placeholder-gray-500 text-sm"
-                    />
-                    <button
-                        class="ml-2 p-2 bg-emerald-600 hover:bg-emerald-500 rounded-full transition-all duration-200 flex items-center justify-center shadow-md"
-                    >
-                        <x-css-search class="h-5 w-5 text-white" />
-                    </button>
+                        <input
+                            id="search"
+                            type="text"
+                            placeholder="Search courses, materials..."
+                            class="w-full bg-transparent outline-none text-gray-200 placeholder-gray-500 text-sm"
+                        />
+                        <button
+                            class="ml-2 p-2 bg-emerald-600 hover:bg-emerald-500 rounded-full transition-all duration-200 flex items-center justify-center shadow-md"
+                        >
+                            <x-css-search class="h-5 w-5 text-white" />
+                        </button>
                     </div>
                 </div>
             </div>
 
             <!-- Navigation -->
-            <nav class="flex-shrink-0">
+            <nav class="shrink-0">
                 <ul class="flex items-center space-x-6">
                     @auth
                         <li>

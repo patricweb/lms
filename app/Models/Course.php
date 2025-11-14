@@ -46,26 +46,20 @@ class Course extends Model
         return $this->hasMany(Lesson::class)->orderBy('order');
     }
 
-    public function quizzes(): HasMany
-    {
-        return $this->hasMany(Quiz::class);
-    }
-
     public function courseComments(): HasMany
     {
         return $this->hasMany(CourseComment::class);
     }
 
     public function getProgressForUser(User $user): int {
-        $total = $this->lessons->count();
-        $completed = $this->lessons->whereHas('completions', fn($q) => $q->where('user_id', $user->id))->count();
+        $total = $this->lessons()->count();
+        $completed = $this->lessons()->whereHas('completions', fn($q) => $q->where('user_id', $user->id))->count();
         return $total > 0 ? round(($completed / $total) * 100) : 0;
     }
 
     public function isCompletedByUser(User $user): bool {
         $progress = $this->getProgressForUser($user);
-        $avgScore = $this->quizzes->avg(fn($quiz) => $quiz->quizAttempts()->where('user_id', $user->id)->latest()->first()?->score ?? 0);
-        return $progress === 100 && $avgScore > 70;
+        return $progress === 100;
     }
 
     public function completionDateForUser(User $user)

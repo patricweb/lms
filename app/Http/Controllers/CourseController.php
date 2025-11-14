@@ -19,7 +19,7 @@ class CourseController extends Controller
 
         $query = Course::with(['category', 'teacher']);
 
-        if ($request->$search)
+        if ($request->search)
         {
             $query->where('title', 'like', '%' . $request->search . '%');
         }
@@ -46,7 +46,7 @@ class CourseController extends Controller
             }
 
             $courses = $query->paginate(10);
-            return view('coures.admin', compact('courses', 'user'));
+            return view('courses.admin', compact('courses', 'user'));
         }
         elseif ($user->role === 'teacher') 
         {
@@ -73,7 +73,7 @@ class CourseController extends Controller
             return redirect('/register');
         }
 
-        $course->load(['modules.lessons', 'quizzes']);
+        $course->load(['modules.lessons']);
 
         $progress = $course->getProgressForUser($user);
         $isCompleted = $course->isCompletedByUser($user);
@@ -110,7 +110,7 @@ class CourseController extends Controller
             'description' => 'required|min:10',
             'price' => 'nullable|numeric|min:0',
             'category_id' => 'required|exists:categories,id',
-            'thumbnail' => 'nullable|image|mimes:jped,png,jpg|max:2048'
+            'thumbnail' => 'nullable|image|mimes:jpeg,png,jpg|max:2048'
         ]);
 
         if ($request->hasFile('thumbnail'))

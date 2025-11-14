@@ -35,6 +35,12 @@ Route::get("/show-user/{id}", [UserController::class, "showUser"])->name("userSh
 
 Route::get("/admin", [AdminController::class, 'admin'])->name("admin");
 
-Route::get('/courses', [CourseController::class, 'courses'])->name("courses");
+Route::get("/courses", [CourseController::class, 'courses'])->name("courses");
+
+Route::get("/courses/{course}", [CourseController::class, 'show'])->name('showCourse');
+
+Route::delete('/courses/{course}', [CourseController::class, 'destroy'])->name('destroyCourse');
+
+Route::get("/courses/edit/{course}", [CourseController::class, "edit"])->name("editCourse");
 
 Route::fallback(function () { return response()->view('errors.404', [], 404); });

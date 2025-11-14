@@ -31,11 +31,6 @@ class User extends Authenticatable {
         return $this->hasMany(Completion::class); 
     }
 
-    public function quizAttempts(): HasMany
-    { 
-        return $this->hasMany(QuizAttempt::class); 
-    }
-
     public function courseComments(): HasMany
     { 
         return $this->hasMany(CourseComment::class); 
