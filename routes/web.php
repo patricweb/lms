@@ -43,4 +43,6 @@ Route::delete('/courses/{course}', [CourseController::class, 'destroy'])->name('
 
 Route::get("/courses/edit/{course}", [CourseController::class, "edit"])->name("editCourse");
 
+Route::post('courses/{course}/lessons/{lesson}/complete', [LessonCompletionController::class, 'complete'])->name('completeLesson');
+
 Route::fallback(function () { return response()->view('errors.404', [], 404); });

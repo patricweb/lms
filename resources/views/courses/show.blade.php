@@ -157,7 +157,7 @@
                                                 @auth
                                                     <div class="ml-4">
                                                         @if($lesson->completions->where('user_id', auth()->id())->isEmpty())
-                                                            <form method="POST" action="{{ route('lessons.complete', $lesson) }}">
+                                                            <form method="POST" action="{{ route('completeLesson', ['course' => $lesson->course, 'lesson' => $lesson]) }}">
                                                                 @csrf
                                                                 <button type="submit" class="bg-[#7cdebe] hover:bg-emerald-400 text-gray-900 px-6 py-3 rounded-xl font-medium transition-all duration-200 transform hover:scale-105">
                                                                     Отметить пройденным
