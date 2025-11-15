@@ -3,7 +3,7 @@
 @section("main")
     <h1>Login</h1>
 
-    <form method='post' action="{{ route('loginPost') }}">
+    <form method='post' action="{{ route('loginPost') }}" class='bobik'>
         @csrf
 
         <input type="email" name='email' placeholder='Email'>
