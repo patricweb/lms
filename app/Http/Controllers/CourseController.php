@@ -130,10 +130,6 @@ class CourseController extends Controller
     {
         $user = Auth::user();
 
-        if ($user->role !== 'teacher' || $user->role !== 'admin')
-        {
-            return view('errors.403');
-        }
         if ($user->role === 'teacher' || $user->role === 'admin' && $user->id !== $course->teacher_id)
         {
             return view('errors.403');
@@ -141,7 +137,7 @@ class CourseController extends Controller
 
         $categories = Category::all();
 
-        return view('course.edit', compact('course', 'categories'));
+        return view('courses.edit', compact('course', 'categories'));
     }
 
     public function update (Request $request, Course $course)

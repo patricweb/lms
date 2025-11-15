@@ -59,9 +59,11 @@
                     @if($course->thumbnail)
                         <img src="{{ asset('storage/' . $course->thumbnail) }}" alt="{{ $course->title }}" class="w-full h-64 object-cover rounded-2xl">
                     @else
-                        <div class="w-full h-64 bg-gradient-to-br from-purple-500 to-emerald-500 rounded-2xl flex items-center justify-center">
-                            <span class="text-white text-2xl font-bold">{{ $course->title }}</span>
-                        </div>
+                        <div class="h-48 flex items-center justify-center bg-[#1f2937]">
+                        <h3 class="text-3xl font-bold text-[#7cdebe] text-center px-4">
+                            {{ $course['title'] }}
+                        </h3>
+                    </div>
                     @endif
                     
                     @auth
