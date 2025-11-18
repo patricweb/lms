@@ -99,7 +99,7 @@
                     </div>
                     <h3 class="text-xl font-semibold text-white mb-2">Модули не добавлены</h3>
                     <p class="text-gray-400 mb-6">Начните создавать учебный контент для этого курса</p>
-                    <a href="{{ route('modules.create', $course) }}" class="bg-purple-500 hover:bg-purple-600 text-white px-6 py-3 rounded-xl font-medium transition-all duration-200 inline-flex items-center gap-2">
+                    <a href="{{ route('createModule', $course) }}" class="bg-purple-500 hover:bg-purple-600 text-white px-6 py-3 rounded-xl font-medium transition-all duration-200 inline-flex items-center gap-2">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
                         </svg>

@@ -68,6 +68,7 @@ class CourseController extends Controller
     public function show(Course $course)
     {
         $user = Auth::user();
+        
         if (!$user)
         {
             return redirect('/register');
@@ -86,10 +87,11 @@ class CourseController extends Controller
     public function create()
     {
         $user = Auth::user();
-        if ($user->role !== 'teacher' || $user->role !== 'admin')
-        {
+
+        if ($user->role !== 'teacher' && $user->role !== 'admin') {
             return view('errors.403');
         }
+
 
         $categories = Category::all();
 
@@ -100,17 +102,17 @@ class CourseController extends Controller
     {
         $user = Auth::user();
 
-        if ($user->role !== 'teacher' || $user->role !== 'admin')
-        {
+        if ($user->role !== 'teacher' && $user->role !== 'admin') {
             return view('errors.403');
         }
+
 
         $validated = $request->validate([
             'title' => 'required|min:3|max:255',
             'description' => 'required|min:10',
             'price' => 'nullable|numeric|min:0',
             'category_id' => 'required|exists:categories,id',
-            'thumbnail' => 'nullable|image|mimes:jpeg,png,jpg|max:2048'
+            'thumbnail' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:2048'
         ]);
 
         if ($request->hasFile('thumbnail'))
@@ -121,19 +123,22 @@ class CourseController extends Controller
         $validated['teacher_id'] = $user->id;
         $validated['is_published'] = false;
 
-        $course = Course::create($validated);
+        $course = Course::create($validated); 
 
-        return redirect()->route('courses.show', $course)->with('success', 'Курс создан успешно!');
+        return redirect()->route('courses', $course)->with('success', 'Курс создан успешно!');
     }
 
     public function edit(Course $course)
     {
         $user = Auth::user();
 
-        if ($user->role === 'teacher' || $user->role === 'admin' && $user->id !== $course->teacher_id)
-        {
+        if ($user->role === 'teacher' && $user->id !== $course->teacher_id) {
             return view('errors.403');
         }
+
+        if ($user->role === 'student') {
+            return view('errors.403');
+        }       
 
         $categories = Category::all();
 
@@ -144,12 +149,11 @@ class CourseController extends Controller
     {
         $user = Auth::user();
 
-        if ($user->role !== 'teacher' || $user->role !== 'admin')
-        {
+        if ($user->role === 'teacher' && $user->id !== $course->teacher_id) {
             return view('errors.403');
         }
-        if ($user->role === 'teacher' || $user->role === 'admin' && $user->id !== $course->teacher_id)
-        {
+
+        if ($user->role === 'student') {
             return view('errors.403');
         }
 
@@ -158,6 +162,7 @@ class CourseController extends Controller
             'description' => 'nullable|min:10',
             'price' => 'nullable|numeric|min:0',
             'category_id' => 'required|exists:categories,id',
+            'thumbnail' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:2048',
             'is_published' => 'boolean'
         ]);
 
@@ -173,24 +178,23 @@ class CourseController extends Controller
 
         $course->update($validated);
 
-        return redirect()->route('courses.show', $course)->with('success', 'Курс успешно обновлен!');
+        return redirect()->route('showCourse', $course)->with('success', 'Курс успешно обновлен!');
     }
 
     public function destroy(Course $course)
     {
         $user = Auth::user();
 
-        if ($user->role !== 'teacher' || $user->role !== 'admin')
-        {
+        if ($user->role === 'teacher' && $user->id !== $course->teacher_id) {
             return view('errors.403');
         }
-        if ($user->role === 'teacher' || $user->role === 'admin' && $user->id !== $course->teacher_id)
-        {
+
+        if ($user->role === 'student') {
             return view('errors.403');
         }
 
         $course->delete();
 
-        return redirect()->route('courses.index')->with('success', "Курс успешно удален");
+        return redirect()->route('courses')->with('success', "Курс успешно удален");
     }
 }

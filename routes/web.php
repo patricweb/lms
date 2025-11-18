@@ -6,6 +6,8 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\CourseController;
+use App\Http\Controllers\LessonController;
+use App\Http\Controllers\ModuleController;
 
 Route::get("/", [GeneralController::class, "landing"])->name("landing");
 
@@ -37,12 +39,24 @@ Route::get("/admin", [AdminController::class, 'admin'])->name("admin");
 
 Route::get("/courses", [CourseController::class, 'courses'])->name("courses");
 
+Route::get("/courses/create", [CourseController::class, "create"])->name('createCourse');
+
+Route::post("/courses/save", [CourseController::class, "save"])->name("saveCourse");
+
+Route::get("/courses/edit/{course}", [CourseController::class, "edit"])->name("editCourse");
+
+Route::put('/courses/edit/{course}', [CourseController::class, 'update'])->name('updateCourse');
+
 Route::get("/courses/{course}", [CourseController::class, 'show'])->name('showCourse');
 
 Route::delete('/courses/{course}', [CourseController::class, 'destroy'])->name('destroyCourse');
 
-Route::get("/courses/edit/{course}", [CourseController::class, "edit"])->name("editCourse");
+Route::post('courses/{course}/lessons/{lesson}/complete', [LessonController::class, 'complete'])->name('completeLesson');
 
-Route::post('courses/{course}/lessons/{lesson}/complete', [LessonCompletionController::class, 'complete'])->name('completeLesson');
+Route::get("/courses/{course}/modules/create", [ModuleController::class, "create"])->name("createModule");
+
+Route::post('/courses/{course}/modules/save', [ModuleController::class, 'save'])->name('saveModule');
+
+Route::get('courses/{course}/modules/{module}', [ModuleController::class, 'show'])->name('showModule');
 
 Route::fallback(function () { return response()->view('errors.404', [], 404); });

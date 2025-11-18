@@ -7,7 +7,7 @@ use App\Models\Completion;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
-class LessonCompletionController extends Controller
+class LessonController extends Controller
 {
     public function show()
     {

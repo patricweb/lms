@@ -13,14 +13,14 @@ return new class extends Migration
     {
         Schema::create('modules', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('course_id')->constrained()->onDelete('cascade'); // К курсу
-            $table->string('title'); // "Модуль 1: Основы"
-            $table->text('description')->nullable(); // Краткое описание
-            $table->integer('order')->default(1); // Порядок модулей в курсе
+            $table->foreignId('course_id')->constrained()->onDelete('cascade');
+            $table->string('title');
+            $table->text('description')->nullable();
+            $table->integer('order')->default(1);
             $table->timestamps();
 
             $table->index('course_id');
-            $table->unique(['course_id', 'order']); // Уникальный порядок
+            $table->unique(['course_id', 'order']);
         });
     }
 

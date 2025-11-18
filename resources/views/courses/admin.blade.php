@@ -9,6 +9,7 @@
         <p>{{ $course->teacher->name }}</p>
         <p>{{ $course->category->name }}</p>
         <p>{{ $course->price }}</p>
+        <hr>
     @endforeach
     
 @endsection
