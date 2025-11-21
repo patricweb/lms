@@ -2,27 +2,30 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Lesson;
-use App\Models\Completion;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use App\Models\Lesson;
+use App\Models\Completion;
 
 class LessonController extends Controller
 {
     public function show()
     {
         $user = Auth::user();
-        if (!$user) 
-        {
+        if (!$user) {
             return redirect('/register');
         }
-
         return view('lessons.show');
     }
 
-    public function complete(Lesson $lesson)
+    public function complete(Request $request, $courseId, $lessonId)
     {
+        $lesson = Lesson::findOrFail($lessonId); 
+
         $user = Auth::user();
+        if (!$user) {
+            return redirect('/login');
+        }
 
         if ($lesson->completions()->where('user_id', $user->id)->exists()) {
             return back()->with('info', 'Урок уже отмечен как пройденный');

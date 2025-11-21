@@ -82,4 +82,21 @@ class ModuleController extends Controller
 
         return redirect()->route('showCourse', $module->course)->with('success', 'Модуль обновлён!');
     }
+
+    public function delete(Course $course, Module $module)
+    {
+        $user = Auth::user();
+
+        if ($user->role === 'teacher' && $user->id !== $course->teacher_id) {
+            return view('errors.403');
+        }
+
+        if ($user->role === 'student') {
+            return view('errors.403');
+        }
+
+        $module->delete();
+
+        return redirect()->route('showCourse')->with('success', 'Модуль удален!');
+    }
 }

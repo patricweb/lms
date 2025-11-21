@@ -19,7 +19,7 @@
                             </div>
                             <div>
                                 <p class="text-gray-400 text-sm">Автор</p>
-                                <p class="text-white font-medium">{{ $course->teacher->name }}</p>
+                                <p class="text-white font-medium">{{ optional($course->teacher)->name }}</p>
                             </div>
                         </div>
                         
@@ -31,15 +31,17 @@
                             </div>
                             <div>
                                 <p class="text-gray-400 text-sm">Категория</p>
-                                <p class="text-white font-medium">{{ $course->category->name }}</p>
+                                <p class="text-white font-medium">{{ optional($course->category)->name }}</p>
                             </div>
                         </div>
                     </div>
                     
                     <div class="flex items-center gap-4">
                         <span class="text-2xl font-bold text-[#7cdebe]">{{ $course->price }} руб.</span>
+
                         @auth
-                            @if(auth()->user()->role === 'teacher' && auth()->id() === $course->teacher_id || auth()->user()->role === 'admin')
+                            {{-- Используем $canEdit, который ты передаёшь из контроллера --}}
+                            @if(!empty($canEdit) && $canEdit)
                                 <a href="{{ route('editCourse', $course) }}" class="bg-purple-500 hover:bg-purple-600 text-white px-6 py-3 rounded-xl font-medium transition-all duration-200">
                                     Редактировать
                                 </a>
@@ -59,23 +61,23 @@
                     @if($course->thumbnail)
                         <img src="{{ asset('storage/' . $course->thumbnail) }}" alt="{{ $course->title }}" class="w-full h-64 object-cover rounded-2xl">
                     @else
-                        <div class="h-48 flex items-center justify-center bg-[#1f2937]">
-                        <h3 class="text-3xl font-bold text-[#7cdebe] text-center px-4">
-                            {{ $course['title'] }}
-                        </h3>
-                    </div>
+                        <div class="h-48 flex items-center justify-center bg-[#1f2937] rounded-2xl">
+                            <h3 class="text-3xl font-bold text-[#7cdebe] text-center px-4">
+                                {{ $course->title }}
+                            </h3>
+                        </div>
                     @endif
                     
                     @auth
                         <div class="absolute -bottom-4 left-1/2 transform -translate-x-1/2 bg-[#18181b] border border-gray-700 rounded-xl p-4 w-4/5">
                             <div class="flex items-center justify-between mb-2">
                                 <span class="text-gray-300">Прогресс</span>
-                                <span class="text-[#7cdebe] font-bold">{{ $progress }}%</span>
+                                <span class="text-[#7cdebe] font-bold">{{ $progress ?? 0 }}%</span>
                             </div>
                             <div class="w-full bg-gray-700 rounded-full h-2">
-                                <div class="bg-[#7cdebe] h-2 rounded-full transition-all duration-300" style="width: {{ $progress }}%"></div>
+                                <div class="bg-[#7cdebe] h-2 rounded-full transition-all duration-300" style="width: {{ $progress ?? 0 }}%"></div>
                             </div>
-                            @if($isCompleted)
+                            @if(!empty($isCompleted) && $isCompleted)
                                 <div class="mt-3 bg-emerald-500 text-white text-center py-2 rounded-lg font-medium">
                                     ✓ Курс завершён!
                                 </div>
@@ -99,67 +101,70 @@
                     </div>
                     <h3 class="text-xl font-semibold text-white mb-2">Модули не добавлены</h3>
                     <p class="text-gray-400 mb-6">Начните создавать учебный контент для этого курса</p>
-                    <a href="{{ route('createModule', $course) }}" class="bg-purple-500 hover:bg-purple-600 text-white px-6 py-3 rounded-xl font-medium transition-all duration-200 inline-flex items-center gap-2">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
-                        </svg>
-                        Добавить модуль
-                    </a>
+
+                    @auth
+                        {{-- Показываем кнопку добавления только если пользователь может редактировать (teacher своего курса или admin) --}}
+                        @if(!empty($canEdit) && $canEdit)
+                            <a href="{{ route('createModule', $course) }}" class="bg-purple-500 hover:bg-purple-600 text-white px-6 py-3 rounded-xl font-medium transition-all duration-200 inline-flex items-center gap-2">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
+                                </svg>
+                                Добавить модуль
+                            </a>
+                        @endif
+                    @endauth
                 </div>
             @else
                 <div class="space-y-6">
                     @foreach($course->modules as $moduleIndex => $module)
-                        <div class="border border-gray-700 rounded-2xl overflow-hidden hover:border-purple-500 transition-all duration-300"
-                             x-data="{ isOpen: false }">
-                            <div class="bg-[#1f2937] p-6 cursor-pointer" 
-                                 @click="isOpen = !isOpen">
+                        <div class="border border-gray-700 rounded-2xl overflow-hidden hover:border-purple-500 transition-all duration-300" x-data="{ isOpen: false }">
+                            <div class="bg-[#1f2937] p-6 cursor-pointer" @click="isOpen = !isOpen">
                                 <div class="flex items-center justify-between">
                                     <div class="flex items-center gap-4">
                                         <div class="w-12 h-12 bg-purple-500 rounded-xl flex items-center justify-center">
-                                            <span class="text-white font-bold text-lg">{{ $moduleIndex + 1 }}</span>
+                                            <span class="text-white font-bold text-lg">{{ $module->order ?? $moduleIndex + 1 }}</span>
                                         </div>
                                         <div>
-                                            <h3 class="text-xl font-semibold text-white">{{ $module->title }}</h3>
+                                            <h3 class="text-xl font-semibold text-white">
+                                                <a href="{{ route('showModule', [$course, $module]) }}" class="hover:underline">
+                                                    {{ $module->title }}
+                                                </a>
+                                            </h3>
                                             <p class="text-gray-400">{{ $module->description }}</p>
                                         </div>
                                     </div>
-                                    <svg class="w-6 h-6 text-gray-400 transform transition-transform duration-300" 
-                                         :class="{ 'rotate-180': isOpen }" 
-                                         fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <svg class="w-6 h-6 text-gray-400 transform transition-transform duration-300" :class="{ 'rotate-180': isOpen }" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
                                     </svg>
                                 </div>
                             </div>
-                            
                             <div x-show="isOpen" x-collapse>
                                 <div class="p-6 space-y-4">
-                                    @foreach($module->lessons as $lessonIndex => $lesson)
+                                    @forelse($module->lessons as $lessonIndex => $lesson)
                                         <div class="bg-[#182023] rounded-xl p-6 border border-gray-700 hover:border-[#7cdebe] transition-all duration-300">
                                             <div class="flex items-start justify-between">
                                                 <div class="flex-1">
                                                     <div class="flex items-center gap-4 mb-3">
                                                         <div class="w-10 h-10 bg-gray-700 rounded-lg flex items-center justify-center">
-                                                            <span class="text-[#7cdebe] font-bold">{{ $lessonIndex + 1 }}</span>
+                                                            <span class="text-[#7cdebe] font-bold">{{ $lesson->order ?? $lessonIndex + 1 }}</span>
                                                         </div>
                                                         <div>
                                                             <h4 class="text-lg font-semibold text-white">{{ $lesson->title }}</h4>
                                                             <p class="text-gray-400 text-sm">{{ $lesson->duration }} минут</p>
                                                         </div>
                                                     </div>
-                                                    
-                                                    <p class="text-gray-300 mb-4 leading-relaxed">{{ $lesson->content }}</p>
-                                                    
+                                                    <p class="text-gray-300 mb-4 leading-relaxed">{{ Str::limit($lesson->content, 400) }}</p>
                                                     @if($lesson->video_url)
                                                         <div class="mb-4 rounded-xl overflow-hidden">
                                                             <iframe width="100%" height="300" src="{{ $lesson->video_url }}" frameborder="0" allowfullscreen class="rounded-lg"></iframe>
                                                         </div>
                                                     @endif
                                                 </div>
-                                                
                                                 @auth
                                                     <div class="ml-4">
+                                                        {{-- Фикс: Передавай $lesson->id вместо $lesson --}}
                                                         @if($lesson->completions->where('user_id', auth()->id())->isEmpty())
-                                                            <form method="POST" action="{{ route('completeLesson', ['course' => $lesson->course, 'lesson' => $lesson]) }}">
+                                                            <form method="POST" action="{{ route('completeLesson', ['course' => $course->id, 'lessonId' => $lesson->id]) }}" class="d-inline">
                                                                 @csrf
                                                                 <button type="submit" class="bg-[#7cdebe] hover:bg-emerald-400 text-gray-900 px-6 py-3 rounded-xl font-medium transition-all duration-200 transform hover:scale-105">
                                                                     Отметить пройденным
@@ -177,7 +182,9 @@
                                                 @endauth
                                             </div>
                                         </div>
-                                    @endforeach
+                                    @empty
+                                        <div class="text-gray-500">Уроки пока не добавлены</div>
+                                    @endforelse
                                 </div>
                             </div>
                         </div>

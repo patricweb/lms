@@ -23,6 +23,8 @@ Route::get("/pricing", [GeneralController::class, "pricing"])->name("pricing");
 
 Route::get("/profile", [UserController::class, "profile"])->name("profile");
 
+Route::post("/profile/update", [UserController::class, "update"])->name("profileUpdate");
+
 Route::get("/register", [AuthController::class, 'register'])->name('register');
 
 Route::post("/register", [AuthController::class, "registerPost"])->name("registerPost");
@@ -51,7 +53,7 @@ Route::get("/courses/{course}", [CourseController::class, 'show'])->name('showCo
 
 Route::delete('/courses/{course}', [CourseController::class, 'destroy'])->name('destroyCourse');
 
-Route::post('courses/{course}/lessons/{lesson}/complete', [LessonController::class, 'complete'])->name('completeLesson');
+Route::post('courses/{course}/lessons/{lessonId}/complete', [LessonController::class, 'complete'])->name('completeLesson'); 
 
 Route::get("/courses/{course}/modules/create", [ModuleController::class, "create"])->name("createModule");
 
