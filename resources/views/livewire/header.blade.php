@@ -20,24 +20,6 @@
                 </a>
             </div>
 
-            <!-- Search Bar - Центрированный -->
-            <div class="flex-1 flex justify-center px-6">
-                <div class="w-full max-w-md">
-                    <div class="flex items-center bg-[#1e2a2e] border border-gray-700 rounded-full px-4 py-2 shadow-inner focus-within:ring-2 focus-within:ring-emerald-500 transition-all duration-200">
-                        <input
-                            id="search"
-                            type="text"
-                            placeholder="Search courses, materials..."
-                            class="w-full bg-transparent outline-none text-gray-200 placeholder-gray-500 text-sm"
-                        />
-                        <button
-                            class="ml-2 p-2 bg-emerald-600 hover:bg-emerald-500 rounded-full transition-all duration-200 flex items-center justify-center shadow-md"
-                        >
-                            <x-css-search class="h-5 w-5 text-white" />
-                        </button>
-                    </div>
-                </div>
-            </div>
 
             <!-- Navigation -->
             <nav class="shrink-0">

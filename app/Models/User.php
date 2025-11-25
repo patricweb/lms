@@ -12,13 +12,22 @@ class User extends Authenticatable {
         'email',
         'password',
         'role',
-        'avatar'
+        'avatar',
+        'is_super_admin'
     ];
 
     protected $hidden = ['password'];
 
     protected function casts(): array {
-        return ['password' => 'hashed'];
+        return [
+            'password' => 'hashed',
+            'is_super_admin' => 'boolean'
+        ];
+    }
+
+    public function isSuperAdmin(): bool
+    {
+        return $this->is_super_admin === true;
     }
 
     public function courses(): HasMany

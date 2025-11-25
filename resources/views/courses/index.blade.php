@@ -82,8 +82,7 @@
             {{-- Только мои (teacher) --}}
             @if($user->role === 'teacher' || $user->role === 'admin')
             <label class="flex items-center gap-2 text-gray-300 cursor-pointer">
-                <input type="checkbox" name="my_only" value="1" {{ request('my_only') ? 'checked' : '' }} 
-                       class="w-4 h-4 text-purple-500 bg-gray-700 border-gray-600 rounded focus:ring-purple-500 focus:ring-2">
+                <input type="checkbox" name="my_only" value="1" {{ request('my_only') ? 'checked' : '' }} class="w-4 h-4 text-purple-500 bg-gray-700 border-gray-600 rounded focus:ring-purple-500 focus:ring-2">
                 Только мои
             </label>
             @endif
@@ -114,12 +113,12 @@
             @forelse($courses as $course)
                 <div class="bg-[#18181b] rounded-2xl border border-gray-700 overflow-hidden hover:border-purple-500 transition-all duration-300 shadow-sm">
                     @if($course->thumbnail)
-                        <img src="{{ Storage::url($course->thumbnail) }}" alt="{{ $course->title }}" class="w-full h-44 object-cover">
+                        <img src="{{ Storage::url($course->thumbnail) }}" alt="{{ $course->title }}" class="w-full h-48 object-cover">
                     @else
-                        <div class="w-full h-44 bg-gray-800 flex items-center justify-center text-gray-400">
-                            <svg class="w-16 h-16 opacity-70" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V7M3 7l9 6 9-6"></path>
-                            </svg>
+                        <div class="h-48 flex items-center justify-center bg-[#1f2937]">
+                            <h3 class="text-3xl font-bold text-[#7cdebe] text-center px-4">
+                                {{ $course['title'] }}
+                            </h3>
                         </div>
                     @endif
                     <div class="p-6">

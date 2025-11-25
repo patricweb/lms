@@ -9,7 +9,7 @@ use App\Models\Module;
 
 class ModuleController extends Controller
 {
-    public function show(Module $module)
+    public function show(Course $course, Module $module)
     {
         $user = Auth::user();
 

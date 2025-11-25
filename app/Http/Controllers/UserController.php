@@ -17,32 +17,35 @@ class UserController extends Controller
             return redirect('/register');
         }
 
-        // Загружаем все курсы с lessons и completions для user (eager load)
-        $allCourses = Course::with(['lessons' => function ($q) use ($user) {
-            $q->with(['completions' => fn($cq) => $cq->where('user_id', $user->id)]);
-        }])->get();
+        $allCourses = Course::with(['lessons' => fn($q) => 
+            $q->with(['completions' => fn($cq) => $cq->where('user_id', $user->id)])
+        ])->get();
 
-        // PHP filter для startedCourses
+        if ($user->role === 'student') {
+            $allCourses = $allCourses->filter(fn($course) => $course->is_published && $course->lessons->count() > 0);
+        }
+
         $startedCourses = $allCourses->filter(function ($course) use ($user) {
             $totalLessons = $course->lessons->count();
-            $completedLessons = $course->lessons->filter(fn($lesson) => $lesson->completions->where('user_id', $user->id)->isNotEmpty())->count();
+            if ($totalLessons === 0) return false;
+            $completedLessons = $course->lessons->filter(fn($lesson) => $lesson->completions->isNotEmpty())->count();
             return $completedLessons > 0 && $completedLessons < $totalLessons;
         });
 
-        // PHP filter для completedCourses
         $completedCourses = $allCourses->filter(function ($course) use ($user) {
             $totalLessons = $course->lessons->count();
-            $completedLessons = $course->lessons->filter(fn($lesson) => $lesson->completions->where('user_id', $user->id)->isNotEmpty())->count();
+            if ($totalLessons === 0) return false;
+            $completedLessons = $course->lessons->filter(fn($lesson) => $lesson->completions->isNotEmpty())->count();
             return $completedLessons === $totalLessons;
         });
 
-        // Фикс createdCourses: Загружаем с relations, PHP count students (unique user_id)
-        $createdCourses = in_array($user->role, ['teacher', 'admin']) 
+        $createdCourses = in_array($user->role, ['teacher', 'admin'])
             ? $user->courses()->with(['lessons' => fn($q) => $q->with('completions')])->get()->map(function ($course) {
                 $studentsCount = $course->lessons->flatMap->completions->pluck('user_id')->unique()->count();
                 $course->students_count = $studentsCount;
                 return $course;
-            }) : collect();
+            })
+            : collect();
 
         return view('users.profile', compact('user', 'startedCourses', 'completedCourses', 'createdCourses'));
     }
