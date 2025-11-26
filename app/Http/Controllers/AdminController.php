@@ -19,18 +19,14 @@ class AdminController extends Controller
         if ($currentUser->role !== 'admin' && !$currentUser->isSuperAdmin()) {
             return view('errors.403');
         }
-
-        // Статистика пользователей
         $totalUsers = User::count();
         $usersByRole = User::selectRaw('role, count(*) as count')
             ->groupBy('role')
             ->pluck('count', 'role');
 
-        // Статистика категорий
         $totalCategories = Category::count();
         $categoriesWithCourses = Category::withCount('courses')->get(['id', 'name', 'courses_count']);
 
-        // Статистика курсов
         $totalCourses = Course::count();
         $publishedCourses = Course::where('is_published', true)->count();
 

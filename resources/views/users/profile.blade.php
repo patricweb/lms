@@ -1,4 +1,5 @@
 @extends("layout")
+
 @section("main")
 
 <div class="min-h-screen py-10 ">

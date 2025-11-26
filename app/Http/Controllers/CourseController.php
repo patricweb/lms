@@ -18,18 +18,12 @@ class CourseController extends Controller
         }
 
         $query = Course::with(['category', 'teacher']);
-
-        // ====== Поиск ======
         if ($request->search) {
             $query->where('title', 'like', '%' . $request->search . '%');
         }
-
-        // ====== Категории ======
         if ($request->category_id) {
             $query->where('category_id', $request->category_id);
         }
-
-        // ====== Статус (для teacher/admin) ======
         if ($user->role !== 'student' && $request->status) {
             switch ($request->status) {
                 case 'all':
@@ -49,7 +43,6 @@ class CourseController extends Controller
             }
         }
 
-        // ====== Тип цены ======
         if ($request->price_type) {
             if ($request->price_type === 'free') {
                 $query->where('price', 0);
@@ -58,15 +51,12 @@ class CourseController extends Controller
             }
         }
 
-        // ====== Мин/Макс цена ======
         if ($request->price_min) {
             $query->where('price', '>=', $request->price_min);
         }
         if ($request->price_max) {
             $query->where('price', '<=', $request->price_max);
         }
-
-        // ====== Дата создания ======
         if ($request->date_filter) {
             $now = now();
             switch ($request->date_filter) {
@@ -76,8 +66,6 @@ class CourseController extends Controller
                 case 'year': $query->where('created_at', '>=', $now->subYear()); break;
             }
         }
-
-        // ====== Фильтр по преподавателю ======
         $teachers = [];
         if ($user->role !== 'student') {
             $teachers = User::where('role', 'teacher')->get();
@@ -85,8 +73,6 @@ class CourseController extends Controller
                 $query->where('teacher_id', $request->teacher_id);
             }
         }
-
-        // ====== Ограничения по ролям ======
         if ($user->role === 'teacher') {
             $query->where(function($q) use ($user) {
                 $q->where('is_published', true)
@@ -102,8 +88,6 @@ class CourseController extends Controller
                 $query->where('teacher_id', $user->id);
             }
         }
-
-        // ====== Сортировка ======
         if ($request->sort) {
             switch ($request->sort) {
                 case 'created_asc': $query->orderBy('created_at', 'asc'); break;

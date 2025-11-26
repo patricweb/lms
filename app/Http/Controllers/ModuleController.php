@@ -20,7 +20,6 @@ class ModuleController extends Controller
 
         $canEdit = (($user->role === 'teacher' && $user->id === $module->course->teacher_id) || $user->role === 'admin');
 
-        // Расчёт прогресса (только для студентов, в контроллере)
         $totalLessons = 0;
         $completedLessons = 0;
         $progress = 0;
@@ -41,7 +40,6 @@ class ModuleController extends Controller
             return view('errors.403');
         }
 
-        // Автоматический порядок: количество модулей + 1
         $defaultOrder = $course->modules()->count() + 1;
 
         return view('modules.create', compact('course', 'defaultOrder'));

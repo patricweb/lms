@@ -55,8 +55,6 @@ class CourseCommentsController extends Controller
         if ($user->id !== $comment->user_id && $user->role !== 'admin') {
             return back()->with('error', 'Нет прав на удаление.');
         }
-
-        // Каскад: удалить replies
         $comment->replies()->delete();
         $comment->delete();
 

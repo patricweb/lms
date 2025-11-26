@@ -14,30 +14,30 @@
             <div>
                 <label for="first-name" class="block text-sm/6 font-semibold text-white">First name</label>
                 <div class="mt-2">
-                <input id="first-name" type="text" name="first-name" autocomplete="given-name" class="block w-full rounded-md bg-white/5 px-3.5 py-2 text-base text-white outline-1 -outline-offset-1 outline-white/10 placeholder:text-gray-500 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-500" />
+                <input id="first-name" type="text" name="first-name" autocomplete="given-name" class="block w-full rounded-md bg-white/5 px-3.5 py-2 text-base text-white outline-none placeholder:text-gray-500" />
                 </div>
             </div>
             <div>
                 <label for="last-name" class="block text-sm/6 font-semibold text-white">Last name</label>
                 <div class="mt-2">
-                <input id="last-name" type="text" name="last-name" autocomplete="family-name" class="block w-full rounded-md bg-white/5 px-3.5 py-2 text-base text-white outline-1 -outline-offset-1 outline-white/10 placeholder:text-gray-500 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-500" />
+                <input id="last-name" type="text" name="last-name" autocomplete="family-name" class="block w-full rounded-md bg-white/5 px-3.5 py-2 text-base text-white outline-none placeholder:text-gray-500" />
                 </div>
             </div>
             <div class="sm:col-span-2">
                 <label for="email" class="block text-sm/6 font-semibold text-white">Email</label>
                 <div class="mt-2">
-                <input id="email" type="email" name="email" autocomplete="email" class="block w-full rounded-md bg-white/5 px-3.5 py-2 text-base text-white outline-1 -outline-offset-1 outline-white/10 placeholder:text-gray-500 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-500" />
+                <input id="email" type="email" name="email" autocomplete="email" class="block w-full rounded-md bg-white/5 px-3.5 py-2 text-base text-white outline-none placeholder:text-gray-500 " />
                 </div>
             </div>
             <div class="sm:col-span-2">
                 <label for="message" class="block text-sm/6 font-semibold text-white">Message</label>
                 <div class="mt-2">
-                <textarea id="message" name="message" rows="4" class="block w-full rounded-md bg-white/5 px-3.5 py-2 text-base text-white outline-1 -outline-offset-1 outline-white/10 placeholder:text-gray-500 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-500"></textarea>
+                <textarea id="message" name="message" rows="4" class="block w-full rounded-md bg-white/5 px-3.5 py-2 text-base text-white outline-none placeholder:text-gray-500 "></textarea>
                 </div>
             </div>
             </div>
             <div class="mt-10">
-            <button type="submit" class="block w-full rounded-md bg-emerald-600 px-3.5 py-2.5 text-center text-sm font-semibold text-white shadow-xs hover:bg-emerald-700 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500">Let's talk</button>
+            <button type="submit" class="block w-full rounded-md bg-emerald-600 px-3.5 py-2.5 text-center text-sm font-semibold text-white shadow-xs hover:bg-emerald-700 ">Let's talk</button>
             </div>
         </form>
     </div>

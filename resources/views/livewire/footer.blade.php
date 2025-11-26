@@ -1,8 +1,6 @@
 <footer class="bg-[#182023] border-t border-gray-800 py-12">
     <div class="container mx-auto px-4">
         <div class="flex flex-col md:flex-row justify-between gap-8">
-
-            {{-- Logo & About --}}
             <div class="flex-1">
                 <div class="flex items-center space-x-3 mb-4">
                     <span class="text-xl font-bold text-emerald-400">EduLMS</span>
@@ -12,8 +10,6 @@
                     Discover the future of education with our modern LMS platform. Engage, learn, and grow with interactive courses powered by cutting-edge technology.
                 </p>
             </div>
-
-            {{-- Contact Info --}}
             <div class="flex-1">
                 <h3 class="text-white font-bold mb-4 text-lg">Contact Info</h3>
                 <ul class="space-y-3 text-gray-400 text-sm">
@@ -38,8 +34,6 @@
                     </li>
                 </ul>
             </div>
-
-            {{-- Social Links --}}
             <div class="flex-1">
                 <h3 class="text-white font-bold mb-4 text-lg">Follow Us</h3>
                 <div class="flex gap-4">
@@ -54,10 +48,7 @@
                     </a>
                 </div>
             </div>
-
         </div>
-
-        {{-- Bottom line --}}
         <div class="border-t border-gray-800 mt-8 pt-6 text-center">
             <p class="text-gray-400 text-sm">
                 &copy; 2025 EduLMS. All rights reserved. Coded by Matei Patric

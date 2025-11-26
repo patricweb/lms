@@ -1,4 +1,5 @@
 @extends("layout")
+
 @section("main")
 <div class="min-h-screen py-8" x-data="{ openModules: {} }">
     <div class="border border-gray-600 rounded-xl container mx-auto px-4">
@@ -45,7 +46,6 @@
                             <h3 class="text-3xl font-bold text-white text-center px-4">{{ $course->title }}</h3>
                         </div>
                     @endif
-
                     @auth
                         <p class="mt-2 text-gray-300 text-center">
                             Прогресс курса: <span class="font-semibold">{{ $progress ?? 0 }}%</span>
@@ -55,10 +55,7 @@
                         </p>
                     @endauth
                 </div>
-
             </div>
-
-            <!-- Modules and Lessons Section -->
             <div class="rounded-2xl p-8 mt-16">
                 <h2 class="text-3xl font-bold mb-8 text-white">Модули и уроки</h2>
                 @auth
@@ -73,7 +70,6 @@
                         </div>
                     @endif
                 @endauth
-
                 @if($course->modules->isEmpty())
                     <div class="text-center py-12">
                         <div class="w-24 h-24 bg-gray-700 rounded-full flex items-center justify-center mx-auto mb-4">
@@ -156,7 +152,7 @@
                                                 <p class="text-gray-500 mb-4">Уроки пока не добавлены</p>
                                                 @auth
                                                     @if(!empty($canEdit) && $canEdit)
-                                                        <a href="{{ route('createLesson', [$course, $module]) }}" class="bg-purple-500 hover:bg-purple-600 text-white px-6 py-3 rounded-xl font-medium transition-all duration-200 inline-flex items-center gap-2 mx-auto">
+                                                        <a href="{{ route('createLesson', [$course, $module]) }}" class="bg-emerald-500 hover:bg-emerald-600 text-white px-6 py-3 rounded-xl font-medium transition-all duration-200 inline-flex items-center gap-2 mx-auto">
                                                             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
                                                             </svg>
@@ -173,12 +169,9 @@
                     </div>
                 @endif
             </div>
-
-            <!-- Comments Section (новая секция для комментариев к курсу) -->
             <div class="rounded-2xl p-8 mt-8">
                 <h2 class="text-3xl font-bold mb-8 text-white text-center">Комментарии к курсу</h2>
                 <div class="flex flex-col gap-8">
-                    <!-- Форма добавления комментария/ответа -->
                         <form method="POST" action="{{ route('storeCourseComment', $course) }}" class="w-full">
                             @csrf
                             <textarea name="comment" class="w-full p-4 rounded-xl bg-[#1f2937] text-white border border-gray-600 focus:outline-none" placeholder="Ваш комментарий" rows="4" required></textarea>
@@ -190,8 +183,6 @@
                                 <small class="text-gray-400 block mt-1">Ответ будет добавлен к выбранному комментарию.</small>
                             @endif
                         </form>
-
-                    <!-- Список комментариев -->
                     <div class="flex flex-col gap-4">
                         @if($course->courseComments->whereNull('parent_id')->count() > 0)
                             @foreach($course->courseComments->whereNull('parent_id') as $comment)
@@ -205,5 +196,4 @@
             </div>
         </div>
     </div>
-
 @endsection

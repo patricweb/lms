@@ -25,11 +25,11 @@ class LessonController extends Controller
             'lessonComments' => function ($query) {
                 $query->with([
                     'user',
-                    'parent.user',  // Загружаем parent для "Ответ для"
+                    'parent.user',
                     'replies' => function ($q) {
-                        $q->with(['user', 'parent.user']);  // Для replies и их parent
+                        $q->with(['user', 'parent.user']);
                     }
-                ])->whereNull('parent_id');  // Root только
+                ])->whereNull('parent_id');
             }
         ]);
 
@@ -122,7 +122,7 @@ class LessonController extends Controller
             return view('errors.403');
         }
 
-        $lesson->delete();  // Soft delete, т.к. trait есть
+        $lesson->delete();
         return redirect()->route('showModule', ['course' => $course, 'module' => $module])->with('success', 'Урок удалён!');
     }
 
@@ -133,8 +133,6 @@ class LessonController extends Controller
         if (!$user) {
             return redirect('/login');
         }
-
-        // Проверка, если урок уже завершён
         if ($lesson->completions()->where('user_id', $user->id)->exists()) {
             return back()->with('info', 'Урок уже отмечен как пройденный');
         }

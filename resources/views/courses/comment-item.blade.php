@@ -3,13 +3,10 @@
         <strong class="text-white">{{ $comment->user->name }}</strong>
         <small class="text-gray-400 text-sm">{{ $comment->created_at->format('d.m.Y H:i') }}</small>
     </div>
-
     @if($level > 0 && $comment->parent)
         <small class="text-gray-400 mb-1 block">Ответ для {{ $comment->parent->user->name }}</small>
     @endif
-
     <p class="text-gray-200 mb-2">{{ $comment->comment }}</p>
-
     @auth
         <div class="flex gap-2 mb-2">
             <button @click="showReplyForm = !showReplyForm" class="px-3 py-1 border border-emerald-500 text-emerald-400 rounded hover:bg-emerald-500 hover:text-gray-900 transition">
@@ -26,7 +23,6 @@
             @endif
         </div>
     @endauth
-
     <div x-show="showReplyForm" x-transition class="mt-2 p-3 bg-[#1f2937] border border-gray-600 rounded">
         <form method="POST" action="{{ route('storeCourseComment', $course) }}">
             @csrf
@@ -38,7 +34,6 @@
             </div>
         </form>
     </div>
-
     @if($comment->replies->count() > 0)
         <div class="mt-2">
             @foreach($comment->replies as $reply)

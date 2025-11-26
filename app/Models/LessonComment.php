@@ -38,13 +38,11 @@ class LessonComment extends Model
         return $this->hasMany(LessonComment::class, 'parent_id');
     }
 
-    // Рекурсивный метод для дерева (бесконечная вложенность)
     public function children()
     {
-        return $this->replies()->with('user', 'replies.children');  // Рекурсивно загружает replies
+        return $this->replies()->with('user', 'replies.children'); 
     }
 
-    // Scope для root-комментариев
     public function scopeRoot($query)
     {
         return $query->whereNull('parent_id');

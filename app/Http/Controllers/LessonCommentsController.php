@@ -4,10 +4,10 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use App\Models\LessonComment;  // Импорт модели комментария
-use App\Models\Lesson;         // Импорт для $lesson
-use App\Models\Module;         // Импорт для $module
-use App\Models\Course;         // Импорт для $course (критично!)
+use App\Models\LessonComment;
+use App\Models\Lesson;
+use App\Models\Module;
+use App\Models\Course;
 
 class LessonCommentsController extends Controller
 {

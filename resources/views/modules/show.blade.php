@@ -1,4 +1,5 @@
 @extends("layout")
+
 @section("main")
 <div class="min-h-screen py-8" x-data="{ openModules: {} }">
 	<div class="border border-gray-600 rounded-xl container mx-auto px-4">
@@ -17,8 +18,6 @@
 					<p class="text-gray-400 mb-2">Порядок модуля: <span class="text-white font-medium">{{ $module->order }}</span></p>
 				</div>
 			</div>
-
-			<!-- Lessons Section -->
 			<div class="rounded-2xl p-8 mt-16">
 				<h2 class="text-3xl font-bold mb-8 text-white">Уроки модуля</h2>
 				
