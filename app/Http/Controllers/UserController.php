@@ -57,9 +57,4 @@ class UserController extends Controller
         $user->update($validated);
         return redirect()->route('profile')->with('success', 'Профиль обновлён!');
     }
-    public function showUser($id)
-    {
-        $user = User::findOrFail($id);
-        return view('users.show', compact('user'));
-    }
 }

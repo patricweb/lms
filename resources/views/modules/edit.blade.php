@@ -1,58 +1,65 @@
 @extends("layout")
 @section("main")
-<div class="container mt-4">
-    <h1>Редактировать модуль "{{ $module->title }}" в курсе "{{ $course->title }}"</h1>
+<div class="min-h-screen py-8 px-4">
+    <div class="max-w-4xl mx-auto bg-[#182023] border border-gray-700 rounded-2xl p-8">
+        <h1 class="text-3xl font-bold text-white mb-6">
+            Редактировать модуль "{{ $module->title }}" в курсе "{{ $course->title }}"
+        </h1>
 
-    @if(session('success'))
-        <div class="alert alert-success">{{ session('success') }}</div>
-    @endif
-    @if($errors->any())
-        <div class="alert alert-danger">
-            <ul class="mb-0">
-                @foreach($errors->all() as $error)
-                    <li>{{ $error }}</li>
-                @endforeach
-            </ul>
-        </div>
-    @endif
+        @if(session('success'))
+            <div class="bg-emerald-500 text-gray-900 px-4 py-2 rounded mb-4">
+                {{ session('success') }}
+            </div>
+        @endif
+        @if($errors->any())
+            <div class="bg-red-500 text-white px-4 py-2 rounded mb-4">
+                <ul class="list-disc list-inside">
+                    @foreach($errors->all() as $error)
+                        <li>{{ $error }}</li>
+                    @endforeach
+                </ul>
+            </div>
+        @endif
 
-    <form method="POST" action="{{ route('updateModule', ['course' => $course, 'module' => $module]) }}">
-        @csrf
-        @method('PUT')
-        <div class="row">
-            <div class="col-md-6">
-                <div class="mb-3">
-                    <label for="title" class="form-label">Название модуля</label>
-                    <input type="text" class="form-control @error('title') is-invalid @enderror" id="title" name="title" value="{{ old('title', $module->title) }}" required>
-                    @error('title')
-                        <div class="invalid-feedback">{{ $message }}</div>
-                    @enderror
+        <form method="POST" action="{{ route('updateModule', ['course' => $course, 'module' => $module]) }}" class="space-y-6">
+            @csrf
+            @method('PUT')
+            <div class="flex flex-col gap-6">
+
+                <div class="space-y-4">
+                    <div>
+                        <label for="title" class="block text-gray-300 mb-1">Название модуля</label>
+                        <input type="text" name="title" id="title" value="{{ old('title', $module->title) }}" required
+                               class="w-full p-3 rounded-xl bg-gray-900 text-white border border-gray-600 outline-none">
+                    </div>
+
+                    <div>
+                        <label for="order" class="block text-gray-300 mb-1">Порядок модуля</label>
+                        <input type="number" name="order" id="order" value="{{ old('order', $module->order) }}" min="1" required
+                               class="w-full p-3 rounded-xl bg-gray-900 text-white border border-gray-600 outline-none">
+                    </div>
                 </div>
 
-                <div class="mb-3">
-                    <label for="order" class="form-label">Порядок модуля</label>
-                    <input type="number" class="form-control @error('order') is-invalid @enderror" id="order" name="order" value="{{ old('order', $module->order) }}" min="1" required>
-                    @error('order')
-                        <div class="invalid-feedback">{{ $message }}</div>
-                    @enderror
+                <div class="space-y-4">
+                    <div>
+                        <label for="description" class="block text-gray-300 mb-1">Описание модуля</label>
+                        <textarea name="description" id="description" rows="5"
+                                  class="w-full p-3 rounded-xl bg-gray-900 text-white border border-gray-600 outline-none">{{ old('description', $module->description) }}</textarea>
+                    </div>
                 </div>
+
             </div>
 
-            <div class="col-md-6">
-                <div class="mb-3">
-                    <label for="description" class="form-label">Описание модуля</label>
-                    <textarea class="form-control @error('description') is-invalid @enderror" id="description" name="description" rows="5">{{ old('description', $module->description) }}</textarea>
-                    @error('description')
-                        <div class="invalid-feedback">{{ $message }}</div>
-                    @enderror
-                </div>
+            <div class="flex justify-end gap-3 mt-6">
+                <a href="{{ route('showCourse', $course) }}"
+                   class="px-6 py-3 bg-gray-600 text-white rounded-xl hover:bg-gray-700 transition">
+                    Назад к курсу
+                </a>
+                <button type="submit" class="px-6 py-3 bg-emerald-500 text-gray-900 rounded-xl hover:bg-emerald-600 transition">
+                    Сохранить изменения
+                </button>
             </div>
-        </div>
-
-        <div class="d-flex justify-content-end">
-            <a href="{{ route('showCourse', $course) }}" class="btn btn-secondary me-2">Назад к курсу</a>
-            <button type="submit" class="btn btn-primary">Сохранить изменения</button>
-        </div>
-    </form>
+        </form>
+    </div>
 </div>
 @endsection

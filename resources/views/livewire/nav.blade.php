@@ -4,17 +4,16 @@
             <a wire:navigate href="{{ route('features') }}" class="text-gray-300 hover:text-emerald-400 transition-colors duration-200 font-medium py-2 hover:border-emerald-400">
                 Features
             </a>
+            @if($user->role === 'admin')
+                <a wire:navigate href="{{ route('admin') }}" class="text-gray-300 hover:text-emerald-400 transition-colors duration-200 font-medium py-2 hover:border-emerald-400">
+                    Admin
+                </a>
+            @endif
             @auth
                 <a wire:navigate href="{{ route('courses') }}" class="text-gray-300 hover:text-emerald-400 transition-colors duration-200 font-medium py-2 hover:border-emerald-400">
                     Courses
                 </a>
             @endauth
-            <a wire:navigate href="{{ route('pricing') }}" class="text-gray-300 hover:text-emerald-400 transition-colors duration-200 font-medium py-2 hover:border-emerald-400">
-                Pricing
-            </a>
-            <a wire:navigate href="{{ route('about') }}" class="text-gray-300 hover:text-emerald-400 transition-colors duration-200 font-medium py-2 hover:border-emerald-400">
-                About
-            </a>
             <a wire:navigate href="{{ route('contacts') }}" class="text-gray-300 hover:text-emerald-400 transition-colors duration-200 font-medium py-2 hover:border-emerald-400">
                 Contact
             </a>

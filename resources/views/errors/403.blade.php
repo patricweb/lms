@@ -17,7 +17,7 @@
                 </p>
 
                 <!-- Action -->
-                <a href="{{ url('/') }}" 
+                <a href="{{ route('landing') }}" 
                    class="bg-purple-500 hover:bg-purple-600 text-center text-white px-6 py-3 rounded-xl font-semibold transition-all duration-200 inline-block w-full">
                     Return to Safety
                 </a>

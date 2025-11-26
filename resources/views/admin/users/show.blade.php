@@ -1,32 +1,35 @@
 @extends('layout')
 
 @section('main')
-<div class="container mt-4">
-    <h1>Пользователь: {{ $user->name }}</h1>
-    <div class="row">
-        <div class="col-md-6">
-            <p><strong>Email:</strong> {{ $user->email }}</p>
-            <p><strong>Роль:</strong> {{ ucfirst($user->role) }}</p>
-            <p><strong>Super Admin:</strong> {{ $user->isSuperAdmin() ? 'Да' : 'Нет' }}</p>
-            <p><strong>Курсы (как учитель):</strong> {{ $user->courses->count() }}</p>
-            <p><strong>Дата регистрации:</strong> {{ $user->created_at->format('d.m.Y H:i') }}</p>
-        </div>
-    </div>
+<div class="min-h-screen py-10 px-4 sm:px-6 lg:px-8">
+    <div class="max-w-3xl mx-auto bg-[#1f2326] border border-gray-700 rounded-2xl shadow-md p-6">
+        <h1 class="text-2xl font-bold text-white mb-6">Пользователь: {{ $user->name }}</h1>
 
-    @if(!$user->isSuperAdmin())
-        <h3 class="mt-4">Изменить роль</h3>
-        <form method="POST" action="{{ route('admin.users.updateRole', $user) }}">
-            @csrf
-            @method('PATCH')
-            <div class="mb-3">
-                <select name="role" class="form-select w-25">
-                    <option value="student" {{ $user->role == 'student' ? 'selected' : '' }}>Ученик</option>
-                    <option value="teacher" {{ $user->role == 'teacher' ? 'selected' : '' }}>Учитель</option>
-                    <option value="admin" {{ $user->role == 'admin' ? 'selected' : '' }}>Админ</option>
-                </select>
-            </div>
-            <button type="submit" class="btn btn-primary">Сохранить</button>
-        </form>
-    @endif
+        <div class="space-y-3 text-gray-300">
+            <p><span class="font-semibold text-white">Email:</span> {{ $user->email }}</p>
+            <p><span class="font-semibold text-white">Роль:</span> {{ ucfirst($user->role) }}</p>
+            <p><span class="font-semibold text-white">Super Admin:</span> {{ $user->isSuperAdmin() ? 'Да' : 'Нет' }}</p>
+            <p><span class="font-semibold text-white">Курсы (как учитель):</span> {{ $user->courses->count() }}</p>
+            <p><span class="font-semibold text-white">Дата регистрации:</span> {{ $user->created_at->format('d.m.Y H:i') }}</p>
+        </div>
+
+        @if(!$user->isSuperAdmin())
+            <h3 class="mt-6 mb-3 text-white font-semibold text-lg">Изменить роль</h3>
+            <form method="POST" action="{{ route('usersUpdateRole', $user) }}" class="space-y-4">
+                @csrf
+                @method('PATCH')
+                <div>
+                    <select name="role" class="w-full md:w-1/3 bg-[#25292c] border border-gray-600 rounded-lg text-white py-2 px-3 focus:outline-none focus:ring-2 focus:ring-emerald-400">
+                        <option value="student" {{ $user->role == 'student' ? 'selected' : '' }}>Ученик</option>
+                        <option value="teacher" {{ $user->role == 'teacher' ? 'selected' : '' }}>Учитель</option>
+                        <option value="admin" {{ $user->role == 'admin' ? 'selected' : '' }}>Админ</option>
+                    </select>
+                </div>
+                <button type="submit" class="bg-emerald-500 hover:bg-emerald-600 text-white font-medium py-2 px-4 rounded-lg transition-all duration-200 shadow hover:shadow-emerald-500/25">
+                    Сохранить
+                </button>
+            </form>
+        @endif
+    </div>
 </div>
 @endsection

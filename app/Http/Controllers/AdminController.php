@@ -91,13 +91,13 @@ class AdminController extends Controller
         ]);
 
         $user->update(['role' => $request->role]);
-        return back()->with('success', 'Роль обновлена.');
+        return redirect(route('usersIndex'))->with('success', 'Роль обновлена.');
     }
 
     public function usersDestroy(User $user)
     {
         $currentUser = Auth::user();
-        if (!$currentUser) {  // Исправлено: проверяем $currentUser, а не $user
+        if (!$currentUser) { 
             return redirect('/register');
         }
         if ($currentUser->role !== 'admin' && !$currentUser->isSuperAdmin()) {
@@ -171,20 +171,5 @@ class AdminController extends Controller
 
         $category->delete();
         return back()->with('success', 'Категория и все курсы удалены.');
-    }
-
-    public function coursesIndex()
-    {
-        $currentUser = Auth::user();
-        if (!$currentUser) {
-            return redirect('/register');
-        }
-        if ($currentUser->role !== 'admin' && !$currentUser->isSuperAdmin()) {
-            return view('errors.403');
-        }
-
-        $courses = Course::with(['category', 'teacher'])->latest()->paginate(20);
-        $totalCourses = Course::count();
-        return view('admin.courses.index', compact('courses', 'totalCourses'));
     }
 }

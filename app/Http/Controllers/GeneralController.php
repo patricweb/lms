@@ -11,16 +11,6 @@ class GeneralController extends Controller
         return view("landing");
     }
 
-    public function home_page()
-    {
-        return view("general.home-page");
-    }
-
-    public function about()
-    {
-        return view("general.about");
-    }
-
     public function contacts()
     {
         return view("general.contacts");
@@ -29,10 +19,5 @@ class GeneralController extends Controller
     public function features()
     {
         return view("general.features");
-    }
-
-    public function pricing()
-    {
-        return view("general.pricing");
     }
 }

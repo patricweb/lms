@@ -1,84 +1,84 @@
 @extends("layout")
+
 @section("main")
-<div class="container mt-4">
-    <h1>Редактировать урок "{{ $lesson->title }}" в модуле "{{ $module->title }}" (курс "{{ $course->title }}")</h1>
+<div class="min-h-screen py-8 px-4">
+    <div class="max-w-5xl mx-auto bg-[#182023] border border-gray-700 rounded-2xl p-8">
+        <h1 class="text-3xl font-bold text-white mb-6">
+            Редактировать урок "{{ $lesson->title }}" в модуле "{{ $module->title }}" (курс "{{ $course->title }}")
+        </h1>
 
-    @if(session('success'))
-        <div class="alert alert-success">{{ session('success') }}</div>
-    @endif
-    @if($errors->any())
-        <div class="alert alert-danger">
-            <ul class="mb-0">
-                @foreach($errors->all() as $error)
-                    <li>{{ $error }}</li>
-                @endforeach
-            </ul>
-        </div>
-    @endif
+        @if(session('success'))
+            <div class="bg-emerald-500 text-gray-900 px-4 py-2 rounded mb-4">
+                {{ session('success') }}
+            </div>
+        @endif
+        @if($errors->any())
+            <div class="bg-red-500 text-white px-4 py-2 rounded mb-4">
+                <ul class="list-disc list-inside">
+                    @foreach($errors->all() as $error)
+                        <li>{{ $error }}</li>
+                    @endforeach
+                </ul>
+            </div>
+        @endif
 
-    <form method="POST" action="{{ route('updateLesson', ['course' => $course, 'module' => $module, 'lesson' => $lesson]) }}">
-        @csrf
-        @method('PUT')
-        <div class="row">
-            <div class="col-md-6">
-                <div class="mb-3">
-                    <label for="title" class="form-label">Название урока</label>
-                    <input type="text" class="form-control @error('title') is-invalid @enderror" id="title" name="title" value="{{ old('title', $lesson->title) }}" required>
-                    @error('title')
-                        <div class="invalid-feedback">{{ $message }}</div>
-                    @enderror
+        <form method="POST" action="{{ route('updateLesson', ['course' => $course, 'module' => $module, 'lesson' => $lesson]) }}" class="space-y-6">
+            @csrf
+            @method('PUT')
+            <div class="flex flex-col gap-6">
+
+                <div class="space-y-4">
+                    <div>
+                        <label for="title" class="block text-gray-300 mb-1">Название урока</label>
+                        <input type="text" name="title" id="title" value="{{ old('title', $lesson->title) }}" required
+                               class="w-full p-3 rounded-xl bg-gray-900 text-white border border-gray-600 outline-none">
+                    </div>
+
+                    <div>
+                        <label for="order" class="block text-gray-300 mb-1">Порядок урока</label>
+                        <input type="number" name="order" id="order" value="{{ old('order', $lesson->order) }}" min="1" required
+                               class="w-full p-3 rounded-xl bg-gray-900 text-white border border-gray-600 outline-none">
+                    </div>
+
+                    <div>
+                        <label for="duration" class="block text-gray-300 mb-1">Длительность (мин)</label>
+                        <input type="number" name="duration" id="duration" value="{{ old('duration', $lesson->duration) }}" min="1" required
+                               class="w-full p-3 rounded-xl bg-gray-900 text-white border border-gray-600 outline-none">
+                    </div>
+
+                    <div class="flex items-center gap-2">
+                        <input type="checkbox" name="is_free_preview" id="is_free_preview" value="1" {{ old('is_free_preview', $lesson->is_free_preview) ? 'checked' : '' }}
+                               class="w-5 h-5 bg-gray-900 border-gray-600">
+                        <label for="is_free_preview" class="text-gray-300">Бесплатный предпросмотр</label>
+                    </div>
                 </div>
 
-                <div class="mb-3">
-                    <label for="order" class="form-label">Порядок урока</label>
-                    <input type="number" class="form-control @error('order') is-invalid @enderror" id="order" name="order" value="{{ old('order', $lesson->order) }}" min="1" required>
-                    @error('order')
-                        <div class="invalid-feedback">{{ $message }}</div>
-                    @enderror
+                <div class="space-y-4">
+                    <div>
+                        <label for="video_url" class="block text-gray-300 mb-1">URL видео (опционально, YouTube)</label>
+                        <input type="url" name="video_url" id="video_url" value="{{ old('video_url', $lesson->video_url) }}"
+                               class="w-full p-3 rounded-xl bg-gray-900 text-white border border-gray-600 outline-none">
+                    </div>
+
+                    <div>
+                        <label for="content" class="block text-gray-300 mb-1">Содержание урока</label>
+                        <textarea name="content" id="content" rows="10" required
+                                  class="w-full p-3 rounded-xl bg-gray-900 text-white border border-gray-600 outline-none">{{ old('content', $lesson->content) }}</textarea>
+                    </div>
                 </div>
 
-                <div class="mb-3">
-                    <label for="duration" class="form-label">Длительность (мин)</label>
-                    <input type="number" class="form-control @error('duration') is-invalid @enderror" id="duration" name="duration" value="{{ old('duration', $lesson->duration) }}" min="1" required>
-                    @error('duration')
-                        <div class="invalid-feedback">{{ $message }}</div>
-                    @enderror
-                </div>
-
-                <div class="mb-3 form-check">
-                    <input type="checkbox" class="form-check-input @error('is_free_preview') is-invalid @enderror" id="is_free_preview" name="is_free_preview" value="1" {{ old('is_free_preview', $lesson->is_free_preview) ? 'checked' : '' }}>
-                    <label class="form-check-label" for="is_free_preview">
-                        Бесплатный предпросмотр
-                    </label>
-                    @error('is_free_preview')
-                        <div class="invalid-feedback d-block">{{ $message }}</div>
-                    @enderror
-                </div>
             </div>
 
-            <div class="col-md-6">
-                <div class="mb-3">
-                    <label for="video_url" class="form-label">URL видео (опционально, YouTube)</label>
-                    <input type="url" class="form-control @error('video_url') is-invalid @enderror" id="video_url" name="video_url" value="{{ old('video_url', $lesson->video_url) }}">
-                    @error('video_url')
-                        <div class="invalid-feedback">{{ $message }}</div>
-                    @enderror
-                </div>
-
-                <div class="mb-3">
-                    <label for="content" class="form-label">Содержание урока</label>
-                    <textarea class="form-control @error('content') is-invalid @enderror" id="content" name="content" rows="10" required>{{ old('content', $lesson->content) }}</textarea>
-                    @error('content')
-                        <div class="invalid-feedback">{{ $message }}</div>
-                    @enderror
-                </div>
+            <div class="flex justify-end gap-3 mt-6">
+                <a href="{{ route('showModule', ['course' => $course, 'module' => $module]) }}"
+                   class="px-6 py-3 bg-gray-600 text-white rounded-xl hover:bg-gray-700 transition">
+                    Назад к модулю
+                </a>
+                <button type="submit" class="px-6 py-3 bg-emerald-500 text-gray-900 rounded-xl hover:bg-emerald-600 transition">
+                    Сохранить изменения
+                </button>
             </div>
-        </div>
-
-        <div class="d-flex justify-content-end">
-            <a href="{{ route('showModule', ['course' => $course, 'module' => $module]) }}" class="btn btn-secondary me-2">Назад к модулю</a>
-            <button type="submit" class="btn btn-primary">Сохранить изменения</button>
-        </div>
-    </form>
+        </form>
+    </div>
 </div>
 @endsection

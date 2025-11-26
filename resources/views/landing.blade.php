@@ -27,35 +27,55 @@
                 </p>
             </div>
             
-            <div class="grid md:grid-cols-3 gap-8">
-                <div class="bg-[#18181b] p-8 rounded-2xl border border-gray-700 hover:border-purple-500 transition-all duration-300 transform hover:-translate-y-2 group">
-                    <div class="w-14 h-14 bg-purple-500 rounded-xl flex items-center justify-center mb-6 group-hover:scale-105 transition-transform duration-300">
-                        <svg class="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                        </svg>
+            <div class="max-w-4xl mx-auto">
+                <div class="prose prose-lg prose-invert text-center">
+                    <p class="text-xl text-gray-300 leading-relaxed mb-12">
+                        EduLMS offers a comprehensive learning management solution designed to meet the needs of modern education. 
+                        Our platform combines cutting-edge technology with user-friendly features to create an exceptional learning experience.
+                    </p>
+                    
+                    <div class="grid md:grid-cols-2 gap-8 lg:gap-12">
+                        <div class="space-y-4 text-center md:text-left">
+                            <h3 class="text-2xl font-semibold text-white mb-6">Key Benefits</h3>
+                            <ul class="text-gray-300 space-y-4">
+                                <li class="flex items-center md:justify-start justify-center">
+                                    <span class="text-purple-500 mr-3 text-lg">-</span>
+                                    <span>Interactive learning with real-time engagement</span>
+                                </li>
+                                <li class="flex items-center md:justify-start justify-center">
+                                    <span class="text-purple-500 mr-3 text-lg">-</span>
+                                    <span>Expert instructors and comprehensive courses</span>
+                                </li>
+                                <li class="flex items-center md:justify-start justify-center">
+                                    <span class="text-purple-500 mr-3 text-lg">-</span>
+                                    <span>Flexible scheduling and self-paced learning</span>
+                                </li>
+                            </ul>
+                        </div>
+                        
+                        <div class="space-y-4 text-center md:text-left">
+                            <h3 class="text-2xl font-semibold text-white mb-6">What You Get</h3>
+                            <ul class="text-gray-300 space-y-4">
+                                <li class="flex items-center md:justify-start justify-center">
+                                    <span class="text-purple-500 mr-3 text-lg">-</span>
+                                    <span>24/7 access from any device</span>
+                                </li>
+                                <li class="flex items-center md:justify-start justify-center">
+                                    <span class="text-purple-500 mr-3 text-lg">-</span>
+                                    <span>Progress tracking and analytics</span>
+                                </li>
+                                <li class="flex items-center md:justify-start justify-center">
+                                    <span class="text-purple-500 mr-3 text-lg">-</span>
+                                    <span>Collaborative learning tools</span>
+                                </li>
+                            </ul>
+                        </div>
                     </div>
-                    <h3 class="text-2xl font-semibold mb-3 text-white">Interactive Learning</h3>
-                    <p class="text-gray-300 leading-relaxed">Engage with interactive content, real-time quizzes, and instant feedback to maximize your learning potential.</p>
-                </div>
-
-                <div class="bg-[#18181b] p-8 rounded-2xl border border-gray-700 hover:border-purple-500 transition-all duration-300 transform hover:-translate-y-2 group">
-                    <div class="w-14 h-14 bg-purple-500 rounded-xl flex items-center justify-center mb-6 group-hover:scale-105 transition-transform duration-300">
-                        <svg class="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path>
-                        </svg>
-                    </div>
-                    <h3 class="text-2xl font-semibold mb-3 text-white">Expert Instructors</h3>
-                    <p class="text-gray-300 leading-relaxed">Learn from industry professionals and experienced educators who are passionate about your success.</p>
-                </div>
-
-                <div class="bg-[#18181b] p-8 rounded-2xl border border-gray-700 hover:border-purple-500 transition-all duration-300 transform hover:-translate-y-2 group">
-                    <div class="w-14 h-14 bg-purple-500 rounded-xl flex items-center justify-center mb-6 group-hover:scale-105 transition-transform duration-300">
-                        <svg class="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
-                        </svg>
-                    </div>
-                    <h3 class="text-2xl font-semibold mb-3 text-white">Flexible Schedule</h3>
-                    <p class="text-gray-300 leading-relaxed">Learn at your own pace with 24/7 access to all courses and materials from any device, anywhere.</p>
+                    
+                    <p class="text-lg text-gray-300 mt-12 leading-relaxed">
+                        Join thousands of satisfied learners who have transformed their educational journey with EduLMS. 
+                        Start your learning experience today and discover the difference.
+                    </p>
                 </div>
             </div>
         </div>
@@ -72,7 +92,7 @@
             </p>
 
             <div class="flex flex-col sm:flex-row gap-4 justify-center">
-                <a wire:navigation href="{{ route('register') }}" class="bg-emerald-500 hover:bg-purple-600 text-white px-8 py-4 rounded-xl font-bold text-lg transition-all duration-200 transform hover:scale-105 shadow-lg inline-block">
+                <a wire:navigation href="{{ route('register') }}" class="bg-emerald-500 hover:bg-emerald-600 text-white px-8 py-4 rounded-xl font-bold text-lg transition-all duration-200 transform hover:scale-105 shadow-lg inline-block">
                     Start Learning Today
                 </a>
             </div>

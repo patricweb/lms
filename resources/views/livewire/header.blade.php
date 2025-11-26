@@ -1,61 +1,63 @@
-<header class="bg-[#182023] border-b border-gray-700 sticky top-0 z-50">
-    <div class="container mx-auto px-4 py-4">
-        <div class="flex items-center justify-between">
-            <!-- Logo -->
-            <div class="flex items-center space-x-3 shrink-0">
-                <a href="{{ route('landing') }}" class="flex items-center space-x-3 no-underline">
-                    <div class="w-10 h-10 bg-emerald-500 rounded-lg flex items-center justify-center shadow-lg">
-                        <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 14l9-5-9-5-9 5 9 5z"></path>
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 14l9-5-9-5-9 5 9 5z"></path>
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 14v6l9-5m-9 5l-9-5m9 5v-6"></path>
-                        </svg>
-                    </div>
-                    <div>
-                        <h1 class="text-2xl font-bold text-emerald-400">
-                            EduLMS
-                        </h1>
-                        <p class="text-xs text-gray-400">by Matei Patric</p>
-                    </div>
+<header class="bg-[#182023] border-b border-gray-700 sticky top-0 z-50" x-data="{ open: false }">
+    <div class="container mx-auto px-4 py-4 flex items-center justify-between">
+        <a href="{{ route('landing') }}" class="flex items-center space-x-3 no-underline">
+            <h1 class="text-2xl text-emerald-400"><span class='font-bold'>EduLMS</span> <small class="text-gray-400 text-sm">made by Matei Patric</small></h1>
+        </a>
+        <nav class="hidden md:flex items-center space-x-6">
+            @auth
+                <a href="{{ route('profile') }}" class="flex items-center space-x-2 text-gray-300 hover:text-emerald-400 transition-colors duration-200 font-medium">
+                        <div class="w-9 h-9 bg-gray-800 rounded-2xl flex items-center justify-center text-white text-sm font-bold">
+                            {{ substr($user->name, 0, 1) }}
+                        </div>
+                    <span>Account</span>
                 </a>
-            </div>
-
-
-            <!-- Navigation -->
-            <nav class="shrink-0">
-                <ul class="flex items-center space-x-6">
-                    @auth
-                        <li>
-                            <a class="flex items-center space-x-2 text-gray-300 hover:text-emerald-400 transition-colors duration-200 font-medium group" href="{{ route('profile') }}">
-                                <svg class="w-5 h-5 group-hover:scale-110 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
-                                </svg>
-                                <span>Account</span>
-                            </a>
-                        </li>
-                        <li>
-                            <a class="flex items-center space-x-2 text-gray-300 hover:text-purple-500 transition-colors duration-200 font-medium group" href="{{ route('logout') }}">
-                                <svg class="w-5 h-5 group-hover:scale-110 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path>
-                                </svg>
-                                <span>Logout</span>
-                            </a>
-                        </li>
-                    @endauth
-                    @guest
-                        <li>
-                            <a class="text-gray-300 hover:text-emerald-400 transition-colors duration-200 font-medium px-4 py-2" href="{{ route('login') }}">
-                                Sign In
-                            </a>
-                        </li>
-                        <li>
-                            <a class="bg-emerald-500 hover:bg-emerald-600 text-white font-medium px-6 py-2 rounded-lg transition-all duration-200 transform hover:scale-105 shadow-lg hover:shadow-emerald-500/25" href="{{ route('register') }}">
-                                Get Started Free
-                            </a>
-                        </li>
-                    @endguest
-                </ul>
-            </nav>
+                <a href="{{ route('logout') }}" class="text-gray-300 hover:text-purple-500 transition-colors duration-200 font-medium">
+                    Logout
+                </a>
+            @endauth
+            @guest
+                <a href="{{ route('login') }}" class="text-gray-300 hover:text-emerald-400 transition-colors duration-200 font-medium px-4 py-2">
+                    Sign In
+                </a>
+                <a href="{{ route('register') }}" class="bg-emerald-500 hover:bg-emerald-600 text-white font-medium px-6 py-2 rounded-lg transition-all duration-200 transform hover:scale-105 shadow-lg hover:shadow-emerald-500/25">
+                    Get Started Free
+                </a>
+            @endguest
+        </nav>
+        <button @click="open = !open" class="md:hidden flex items-center text-gray-300 focus:outline-none">
+            <svg x-show="!open" xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
+            </svg>
+            <svg x-show="open" xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+            </svg>
+        </button>
+    </div>
+    <div x-show="open" x-transition class="md:hidden bg-[#182023] border-t border-gray-700">
+        <div class="px-4 py-4 space-y-3 flex flex-col">
+            @auth
+                <a href="{{ route('profile') }}" class="flex items-center space-x-2 text-gray-300 hover:text-emerald-400 transition-colors duration-200 font-medium">
+                    @if($user->avatar)
+                        <img src="{{ asset('storage/' . $user->avatar) }}" alt="Avatar" class="w-8 h-8 rounded-2xl object-cover">
+                    @else
+                        <div class="w-8 h-8 bg-gray-800 rounded-2xl flex items-center justify-center text-white text-sm font-bold">
+                            {{ substr($user->name, 0, 1) }}
+                        </div>
+                    @endif
+                    <span>Account</span>
+                </a>
+                <a href="{{ route('logout') }}" class="text-gray-300 hover:text-purple-500 transition-colors duration-200 font-medium">
+                    Logout
+                </a>
+            @endauth
+            @guest
+                <a href="{{ route('login') }}" class="text-gray-300 hover:text-emerald-400 transition-colors duration-200 font-medium">
+                    Sign In
+                </a>
+                <a href="{{ route('register') }}" class="bg-emerald-500 hover:bg-emerald-600 text-white font-medium px-4 py-2 rounded-lg transition-all duration-200">
+                    Get Started Free
+                </a>
+            @endguest
         </div>
     </div>
 </header>
