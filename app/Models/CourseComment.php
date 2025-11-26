@@ -14,7 +14,7 @@ class CourseComment extends Model
     protected $fillable = [
         'user_id',
         'course_id',
-        'commnet',
+        'comment',
         'parent_id'
     ];
 

@@ -12,9 +12,7 @@ class ModuleController extends Controller
     public function show(Course $course, Module $module)
     {
         $user = Auth::user();
-
-        if (!$user) 
-        {
+        if (!$user) {
             return redirect('/register');
         }
 
@@ -22,7 +20,18 @@ class ModuleController extends Controller
 
         $canEdit = (($user->role === 'teacher' && $user->id === $module->course->teacher_id) || $user->role === 'admin');
 
-        return view('modules.show', compact('module', 'canEdit', 'user'));
+        // Расчёт прогресса (только для студентов, в контроллере)
+        $totalLessons = 0;
+        $completedLessons = 0;
+        $progress = 0;
+
+        if ($user->role === 'student') {
+            $totalLessons = $module->lessons->count();
+            $completedLessons = $module->lessons->filter(fn($lesson) => $lesson->isCompletedByUser($user))->count();
+            $progress = $totalLessons > 0 ? round(($completedLessons / $totalLessons) * 100) : 0;
+        }
+
+        return view('modules.show', compact('module', 'canEdit', 'user', 'totalLessons', 'completedLessons', 'progress'));
     }
 
     public function create(Course $course)
@@ -32,7 +41,10 @@ class ModuleController extends Controller
             return view('errors.403');
         }
 
-        return view('modules.create', compact('course'));
+        // Автоматический порядок: количество модулей + 1
+        $defaultOrder = $course->modules()->count() + 1;
+
+        return view('modules.create', compact('course', 'defaultOrder'));
     }
 
     public function save(Request $request, Course $course)
@@ -43,60 +55,57 @@ class ModuleController extends Controller
         }
 
         $validated = $request->validate([
-            'title'       => 'required|min:3|max:255',
+            'title' => 'required|min:3|max:255',
             'description' => 'nullable|min:5',
-            'order'       => 'required|numeric|min:1|unique:modules,order,NULL,id,course_id,' . $course->id
+            'order' => 'required|numeric|min:1|unique:modules,order,NULL,id,course_id,' . $course->id
         ]);
 
         $validated['course_id'] = $course->id;
-
         Module::create($validated);
 
         return redirect()->route('showCourse', $course)->with('success', 'Модуль добавлен!');
     }
 
-    public function edit(Module $module)
+    public function edit(Course $course, Module $module)
     {
         $user = Auth::user();
         if (($user->role === 'teacher' && $user->id !== $module->course->teacher_id) || $user->role === 'student') {
             return view('errors.403');
         }
 
-        return view('modules.edit', compact('module'));
+        return view('modules.edit', compact('module', 'course'));
     }
 
-    public function update(Request $request, Module $module)
+    public function update(Request $request, Course $course, Module $module)
     {
         $user = Auth::user();
-        if (($user->role === 'teacher' && $user->id !== $module->course->teacher_id) || $user->role === 'student') {
+        if (($user->role === 'teacher' && $user->id !== $course->teacher_id) || $user->role === 'student') {
             return view('errors.403');
         }
 
         $validated = $request->validate([
-            'title'       => 'required|min:3|max:255',
+            'title' => 'required|min:3|max:255',
             'description' => 'nullable|min:5',
-            'order'       => 'required|numeric|min:1|unique:modules,order,' . $module->id . ',id,course_id,' . $module->course_id
+            'order' => 'required|numeric|min:1|unique:modules,order,' . $module->id . ',id,course_id,' . $course->id
         ]);
 
         $module->update($validated);
 
-        return redirect()->route('showCourse', $module->course)->with('success', 'Модуль обновлён!');
+        return redirect()->route('showCourse', $course)->with('success', 'Модуль обновлён!');
     }
 
     public function delete(Course $course, Module $module)
     {
         $user = Auth::user();
-
         if ($user->role === 'teacher' && $user->id !== $course->teacher_id) {
             return view('errors.403');
         }
-
         if ($user->role === 'student') {
             return view('errors.403');
         }
 
         $module->delete();
 
-        return redirect()->route('showCourse')->with('success', 'Модуль удален!');
+        return redirect()->route('showCourse', $course)->with('success', 'Модуль удалён!');
     }
 }

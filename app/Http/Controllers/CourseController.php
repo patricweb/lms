@@ -126,18 +126,29 @@ class CourseController extends Controller
     public function show(Course $course)
     {
         $user = Auth::user();
-        
-        if (!$user)
-        {
+        if (!$user) {
             return redirect('/register');
         }
 
-        $course->load(['modules.lessons']);
+        $course->load([
+            'teacher',
+            'category',
+            'modules.lessons',
+            'courseComments' => function ($query) {
+                $query->with([
+                    'user',
+                    'parent.user',
+                    'replies' => function ($q) {
+                        $q->with(['user', 'parent.user']);
+                    }
+                ])->whereNull('parent_id');
+            }
+        ]);
 
         $progress = $course->getProgressForUser($user);
         $isCompleted = $course->isCompletedByUser($user);
 
-        $canEdit = ($user->role === 'teacher' && $user->id === $course->teacher_id || $user->role === 'admin');
+        $canEdit = (($user->role === 'teacher' && $user->id === $course->teacher_id) || $user->role === 'admin');
 
         return view('courses.show', compact('course', 'progress', 'isCompleted', 'canEdit', 'user'));
     }

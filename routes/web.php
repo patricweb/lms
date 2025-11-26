@@ -9,6 +9,7 @@ use App\Http\Controllers\CourseController;
 use App\Http\Controllers\LessonController;
 use App\Http\Controllers\ModuleController;
 use App\Http\Controllers\LessonCommentsController;
+use App\Http\Controllers\CourseCommentsController;
 
 Route::get("/", [GeneralController::class, "landing"])->name("landing");
 Route::get("/home", [GeneralController::class, "home_page"])->name("home");
@@ -61,5 +62,8 @@ Route::get('courses/{course}/modules/{module}/lessons/{lesson}/comments/create',
 Route::post('courses/{course}/modules/{module}/lessons/{lesson}/comments', [LessonCommentsController::class, 'store'])->name('storeLessonComment');
 Route::get('courses/{course}/modules/{module}/lessons/{lesson}/comments/{comment}/reply', [LessonCommentsController::class, 'reply'])->name('replyLessonComment');
 Route::delete('courses/{course}/modules/{module}/lessons/{lesson}/comments/{comment}', [LessonCommentsController::class, 'destroy'])->name('deleteLessonComment');
+Route::get('courses/{course}/comments', [CourseCommentsController::class, 'index'])->name('courseComments.index');
+Route::post('courses/{course}/comments', [CourseCommentsController::class, 'store'])->name('storeCourseComment');
+Route::delete('courses/{course}/comments/{comment}', [CourseCommentsController::class, 'destroy'])->name('deleteCourseComment');
 
 Route::fallback(function () { return response()->view('errors.404', [], 404); });

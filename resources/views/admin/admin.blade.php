@@ -35,7 +35,7 @@
                 <div class="card-body">
                     <h5>Курсов: {{ $totalCourses }}</h5>
                     <p>Опубликовано: {{ $publishedCourses }}</p>
-                    <a href="{{ route('admin.courses.index') }}" class="btn btn-light btn-sm">Управление</a>
+                    <a href="{{ route('courses') }}" class="btn btn-light btn-sm">Управление</a>
                 </div>
             </div>
         </div>

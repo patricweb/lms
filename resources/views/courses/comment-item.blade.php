@@ -11,7 +11,7 @@
         <div class="btn-group btn-group-sm">
             <button @click="showReplyForm = true" class="btn btn-outline-primary">Ответить</button>
             @if($user->id === $comment->user_id || $user->role === 'admin')
-                <form method="POST" action="{{ route('deleteLessonComment', ['course' => $course, 'module' => $module, 'lesson' => $lesson, 'comment' => $comment]) }}" class="d-inline" onsubmit="return confirm('Удалить?')">
+                <form method="POST" action="{{ route('deleteCourseComment', ['course' => $course, 'comment' => $comment]) }}" class="d-inline" onsubmit="return confirm('Удалить?')">
                     @csrf
                     @method('DELETE')
                     <button type="submit" class="btn btn-outline-danger">Удалить</button>
@@ -20,9 +20,9 @@
         </div>
     @endauth
 
-    <!-- Динамическая форма ответа (показывается под комментарием) -->
+    <!-- Динамическая форма ответа (под комментарием) -->
     <div x-show="showReplyForm" x-transition class="mt-2 p-3 bg-light border rounded">
-        <form method="POST" action="{{ route('storeLessonComment', ['course' => $course, 'module' => $module, 'lesson' => $lesson]) }}">
+        <form method="POST" action="{{ route('storeCourseComment', $course) }}">
             @csrf
             <input type="hidden" name="parent_id" value="{{ $comment->id }}">
             <div class="mb-3">
@@ -37,7 +37,7 @@
     @if($comment->replies->count() > 0)
         <div class="mt-2">
             @foreach($comment->replies as $reply)
-                @include('lessons.comment-item', ['comment' => $reply, 'level' => $level + 1, 'course' => $course, 'module' => $module, 'lesson' => $lesson, 'user' => $user])
+                @include('courses.comment-item', ['comment' => $reply, 'level' => $level + 1, 'course' => $course, 'user' => $user])
             @endforeach
         </div>
     @endif

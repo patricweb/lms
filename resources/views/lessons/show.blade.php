@@ -39,7 +39,7 @@
             @if($canEdit)
                 <div class="mt-3">
                     <a href="{{ route('editLesson', ['course' => $course, 'module' => $module, 'lesson' => $lesson]) }}" class="btn btn-warning">Редактировать урок</a>
-                    <form method="DELETE" action="{{ route('deleteLesson', ['course' => $course, 'module' => $module, 'lesson' => $lesson]) }}" class="d-inline" onsubmit="return confirm('Удалить урок?')">
+                    <form method="POST" action="{{ route('deleteLesson', ['course' => $course, 'module' => $module, 'lesson' => $lesson]) }}" class="d-inline" onsubmit="return confirm('Удалить урок?')">
                         @csrf
                         @method('DELETE')
                         <button type="submit" class="btn btn-danger">Удалить</button>

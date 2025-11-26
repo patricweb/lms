@@ -1,7 +1,5 @@
 @extends('layout')
-
 @section('main')
-
 <div class="container mt-4">
     <div class="row">
         <div class="col-md-8">
@@ -14,11 +12,6 @@
         </div>
         <div class="col-md-4">
             @if($user->role === 'student')
-                @php
-                    $totalLessons = $module->lessons->count();
-                    $completedLessons = $module->lessons->filter(fn($lesson) => $lesson->isCompletedByUser($user))->count();
-                    $progress = $totalLessons > 0 ? round(($completedLessons / $totalLessons) * 100) : 0;
-                @endphp
                 <div class="card">
                     <div class="card-body">
                         <h6>Ваш прогресс</h6>
@@ -53,13 +46,15 @@
                     <div class="btn-group" role="group">
                         @if($canEdit)
                             <a href="{{ route('editLesson', ['course' => $module->course, 'module' => $module, 'lesson' => $lesson]) }}" class="btn btn-sm btn-warning">Редактировать</a>
-                            <form method="DELETE" action="{{ route('deleteLesson', ['course' => $module->course, 'module' => $module, 'lesson' => $lesson]) }}" class="d-inline" onsubmit="return confirm('Удалить урок?')">
+                            <form method="POST" action="{{ route('deleteLesson', ['course' => $module->course, 'module' => $module, 'lesson' => $lesson]) }}" class="d-inline" onsubmit="return confirm('Удалить урок?')">
                                 @csrf
                                 @method('DELETE')
                                 <button type="submit" class="btn btn-sm btn-danger">Удалить</button>
                             </form>
                         @elseif($user->role === 'student')
-                            <a href="{{ route('completeLesson', ['course' => $module->course, 'lessonId' => $lesson->id]) }}" class="btn btn-sm btn-primary">Завершить</a>
+                            @if(!$lesson->isCompletedByUser($user))  {{-- Фикс: кнопка только если не завершён --}}
+                                <a href="{{ route('completeLesson', ['course' => $module->course, 'lessonId' => $lesson->id]) }}" class="btn btn-sm btn-primary">Завершить</a>
+                            @endif
                         @endif
                     </div>
                 </div>
@@ -83,5 +78,4 @@
 
     <a href="{{ route('showCourse', $module->course) }}" class="btn btn-secondary mt-3">Назад к курсу</a>
 </div>
-
 @endsection

@@ -13,6 +13,7 @@ class Lesson extends Model
 
     protected $fillable = [
         'course_id',
+        'module_id',
         'title',
         'content',
         'video_url',
@@ -43,5 +44,10 @@ class Lesson extends Model
     public function lessonComments(): HasMany
     {
         return $this->hasMany(LessonComment::class);
+    }
+
+    public function isCompletedByUser(User $user): bool
+    {
+        return $this->completions()->where('user_id', $user->id)->exists();
     }
 }
