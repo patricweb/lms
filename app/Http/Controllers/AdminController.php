@@ -152,7 +152,7 @@ class AdminController extends Controller
         ]);
 
         Category::create($request->all());
-        return redirect()->route('admin.categories.index')->with('success', 'Категория создана.');
+        return redirect()->route('categoriesIndex')->with('success', 'Категория создана.');
     }
 
     public function categoriesDestroy(Category $category)
