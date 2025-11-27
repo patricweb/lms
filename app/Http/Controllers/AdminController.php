@@ -12,57 +12,71 @@ class AdminController extends Controller
 {
     public function admin()
     {
-        $currentUser = Auth::user();
-        if (!$currentUser) {
+        $loggedUser = Auth::user();
+
+        if (!$loggedUser)
+        {
             return redirect('/register');
         }
-        if ($currentUser->role !== 'admin' && !$currentUser->isSuperAdmin()) {
+
+        if ($loggedUser->role !== 'admin' && !$loggedUser->isSuperAdmin())
+        {
             return view('errors.403');
         }
+
         $totalUsers = User::count();
+
         $usersByRole = User::selectRaw('role, count(*) as count')
             ->groupBy('role')
             ->pluck('count', 'role');
 
         $totalCategories = Category::count();
+
         $categoriesWithCourses = Category::withCount('courses')->get(['id', 'name', 'courses_count']);
 
         $totalCourses = Course::count();
+
         $publishedCourses = Course::where('is_published', true)->count();
 
-        return view('admin.admin', compact(
-            'totalUsers', 'usersByRole',
-            'totalCategories', 'categoriesWithCourses',
-            'totalCourses', 'publishedCourses'
-        ));
+        return view('admin.admin', compact('totalUsers', 'usersByRole','totalCategories', 'categoriesWithCourses','totalCourses', 'publishedCourses'));
     }
 
     public function usersIndex()
     {
-        $currentUser = Auth::user();
-        if (!$currentUser) {
+        $loggedUser = Auth::user();
+
+        if (!$loggedUser)
+        {
             return redirect('/register');
         }
-        if ($currentUser->role !== 'admin' && !$currentUser->isSuperAdmin()) {
+
+        if ($loggedUser->role !== 'admin' && !$loggedUser->isSuperAdmin())
+        {
             return view('errors.403');
         }
 
         $users = User::latest()->paginate(20);
+
         return view('admin.users.index', compact('users'));
     }
 
     public function usersShow(User $user)
     {
-        $currentUser = Auth::user();
-        if (!$currentUser) {
+        $loggedUser = Auth::user();
+
+        if (!$loggedUser)
+        {
             return redirect('/register');
         }
-        if ($currentUser->role !== 'admin' && !$currentUser->isSuperAdmin()) {
+
+        if ($loggedUser->role !== 'admin' && !$loggedUser->isSuperAdmin())
+        {
             return view('errors.403');
         }
 
-        if ($user->isSuperAdmin()) {
-            return back()->with('error', 'Супер-админа нельзя редактировать.');
+        if ($user->isSuperAdmin()) 
+        {
+            return back();
         }
 
         return view('admin.users.show', compact('user'));
@@ -70,16 +84,18 @@ class AdminController extends Controller
 
     public function usersUpdateRole(Request $request, User $user)
     {
-        $currentUser = Auth::user();
-        if (!$currentUser) {
+        $loggedUser = Auth::user();
+
+        if (!$loggedUser) {
             return redirect('/register');
         }
-        if ($currentUser->role !== 'admin' && !$currentUser->isSuperAdmin()) {
+
+        if ($loggedUser->role !== 'admin' && !$loggedUser->isSuperAdmin()) {
             return view('errors.403');
         }
 
         if ($user->isSuperAdmin()) {
-            return back()->with('error', 'Супер-админа нельзя менять.');
+            return back();
         }
 
         $request->validate([
@@ -87,48 +103,64 @@ class AdminController extends Controller
         ]);
 
         $user->update(['role' => $request->role]);
-        return redirect(route('usersIndex'))->with('success', 'Роль обновлена.');
+
+        return redirect(route('usersIndex'));
     }
 
     public function usersDestroy(User $user)
     {
-        $currentUser = Auth::user();
-        if (!$currentUser) { 
+        $loggedUser = Auth::user();
+
+        if (!$loggedUser)
+        { 
             return redirect('/register');
         }
-        if ($currentUser->role !== 'admin' && !$currentUser->isSuperAdmin()) {
+
+        if ($loggedUser->role !== 'admin' && !$loggedUser->isSuperAdmin())
+        {
             return view('errors.403');
         }
 
-        if ($user->isSuperAdmin()) {
-            return back()->with('error', 'Супер-админа нельзя удалить.');
+        if ($user->isSuperAdmin())
+        {
+            return back();
         }
 
         $user->delete();
-        return back()->with('success', 'Пользователь удалён.');
+
+        return back();
     }
 
     public function categoriesIndex()
     {
-        $currentUser = Auth::user();
-        if (!$currentUser) {
+        $loggedUser = Auth::user();
+
+        if (!$loggedUser) 
+        {
             return redirect('/register');
         }
-        if ($currentUser->role !== 'admin' && !$currentUser->isSuperAdmin()) {
+
+        if ($loggedUser->role !== 'admin' && !$loggedUser->isSuperAdmin())
+        {
             return view('errors.403');
         }
 
         $categories = Category::withCount('courses')->latest()->paginate(20);
+
         return view('admin.categories.index', compact('categories'));
     }
 
     public function categoriesCreate()
     {
-        $currentUser = Auth::user();
-        if (!$currentUser) {
+        $loggedUser = Auth::user();
+
+        if (!$loggedUser)
+        {
             return redirect('/register');
         }
-        if ($currentUser->role !== 'admin' && !$currentUser->isSuperAdmin()) {
+
+        if ($loggedUser->role !== 'admin' && !$loggedUser->isSuperAdmin())
+        {
             return view('errors.403');
         }
 
@@ -137,11 +169,15 @@ class AdminController extends Controller
 
     public function categoriesStore(Request $request)
     {
-        $currentUser = Auth::user();
-        if (!$currentUser) {
+        $loggedUser = Auth::user();
+
+        if (!$loggedUser)
+        {
             return redirect('/register');
         }
-        if ($currentUser->role !== 'admin' && !$currentUser->isSuperAdmin()) {
+
+        if ($loggedUser->role !== 'admin' && !$loggedUser->isSuperAdmin())
+        {
             return view('errors.403');
         }
 
@@ -152,20 +188,25 @@ class AdminController extends Controller
         ]);
 
         Category::create($request->all());
-        return redirect()->route('categoriesIndex')->with('success', 'Категория создана.');
+
+        return redirect()->route('categoriesIndex');
     }
 
     public function categoriesDestroy(Category $category)
     {
-        $currentUser = Auth::user();
-        if (!$currentUser) {
+        $loggedUser = Auth::user();
+
+        if (!$loggedUser)
+        {
             return redirect('/register');
         }
-        if ($currentUser->role !== 'admin' && !$currentUser->isSuperAdmin()) {
+
+        if ($loggedUser->role !== 'admin' && !$loggedUser->isSuperAdmin())
+        {
             return view('errors.403');
         }
 
         $category->delete();
-        return back()->with('success', 'Категория и все курсы удалены.');
+        return back();
     }
 }

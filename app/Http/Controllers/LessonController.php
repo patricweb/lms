@@ -14,19 +14,24 @@ class LessonController extends Controller
     public function show(Course $course, Module $module, Lesson $lesson)
     {
         $user = Auth::user();
-        if (!$user) {
+
+        if (!$user) 
+        {
             return redirect('/register');
         }
 
         $lesson->load([
-            'completions' => function ($query) use ($user) {
+            'completions' => function ($query) use ($user) 
+            {
                 $query->where('user_id', $user->id);
             },
-            'lessonComments' => function ($query) {
+            'lessonComments' => function ($query) 
+            {
                 $query->with([
                     'user',
                     'parent.user',
-                    'replies' => function ($q) {
+                    'replies' => function ($q) 
+                    {
                         $q->with(['user', 'parent.user']);
                     }
                 ])->whereNull('parent_id');
@@ -34,16 +39,21 @@ class LessonController extends Controller
         ]);
 
         $canEdit = (($user->role === 'teacher' && $user->id === $course->teacher_id) || $user->role === 'admin');
+
         return view('lessons.show', compact('lesson', 'module', 'course', 'canEdit', 'user'));
     }
 
     public function create(Course $course, Module $module)
     {
         $user = Auth::user();
-        if (!$user) {
+
+        if (!$user) 
+        {
             return redirect('/register');
         }
-        if ($user->role !== 'teacher' && $user->role !== 'admin') {
+
+        if ($user->role !== 'teacher' && $user->role !== 'admin') 
+        {
             return view('errors.403');
         }
 
@@ -53,10 +63,14 @@ class LessonController extends Controller
     public function store(Request $request, Course $course, Module $module)
     {
         $user = Auth::user();
-        if (!$user) {
+
+        if (!$user) 
+        {
             return redirect('/register');
         }
-        if ($user->role !== 'teacher' && $user->role !== 'admin') {
+
+        if ($user->role !== 'teacher' && $user->role !== 'admin') 
+        {
             return view('errors.403');
         }
 
@@ -70,19 +84,25 @@ class LessonController extends Controller
         ]);
 
         $validated['course_id'] = $course->id;
+
         $validated['module_id'] = $module->id;
+
         Lesson::create($validated);
 
-        return redirect()->route('showModule', ['course' => $course, 'module' => $module])->with('success', 'Урок добавлен!');
+        return redirect()->route('showModule', ['course' => $course, 'module' => $module]);
     }
 
     public function edit(Course $course, Module $module, Lesson $lesson)
     {
         $user = Auth::user();
-        if (!$user) {
+
+        if (!$user) 
+        {
             return redirect('/register');
         }
-        if (($user->role === 'teacher' && $user->id !== $course->teacher_id) || $user->role === 'student') {
+        
+        if (($user->role === 'teacher' && $user->id !== $course->teacher_id) || $user->role === 'student')
+        {
             return view('errors.403');
         }
 
@@ -92,10 +112,14 @@ class LessonController extends Controller
     public function update(Request $request, Course $course, Module $module, Lesson $lesson)
     {
         $user = Auth::user();
-        if (!$user) {
+
+        if (!$user) 
+        {
             return redirect('/register');
         }
-        if (($user->role === 'teacher' && $user->id !== $course->teacher_id) || $user->role === 'student') {
+
+        if (($user->role === 'teacher' && $user->id !== $course->teacher_id) || $user->role === 'student')
+        {
             return view('errors.403');
         }
 
@@ -109,32 +133,43 @@ class LessonController extends Controller
         ]);
 
         $lesson->update($validated);
-        return redirect()->route('showModule', ['course' => $course, 'module' => $module])->with('success', 'Урок обновлён!');
+
+        return redirect()->route('showModule', compact('course', 'module'));
     }
 
     public function destroy(Course $course, Module $module, Lesson $lesson)
     {
         $user = Auth::user();
-        if (!$user) {
+
+        if (!$user) 
+        {
             return redirect('/register');
         }
-        if (($user->role === 'teacher' && $user->id !== $course->teacher_id) || $user->role === 'student') {
+
+        if (($user->role === 'teacher' && $user->id !== $course->teacher_id) || $user->role === 'student') 
+        {
             return view('errors.403');
         }
 
         $lesson->delete();
-        return redirect()->route('showModule', ['course' => $course, 'module' => $module])->with('success', 'Урок удалён!');
+
+        return redirect()->route('showModule', compact('course', 'module'));
     }
 
     public function complete(Request $request, $courseId, $lessonId)
     {
         $lesson = Lesson::findOrFail($lessonId);
+
         $user = Auth::user();
-        if (!$user) {
+
+        if (!$user)
+        {
             return redirect('/login');
         }
-        if ($lesson->completions()->where('user_id', $user->id)->exists()) {
-            return back()->with('info', 'Урок уже отмечен как пройденный');
+
+        if ($lesson->completions()->where('user_id', $user->id)->exists())
+        {
+            return back();
         }
 
         Completion::create([
@@ -143,6 +178,6 @@ class LessonController extends Controller
             'completed_at' => now(),
         ]);
 
-        return back()->with('success', 'Урок отмечен как пройденный!');
+        return back();
     }
 }

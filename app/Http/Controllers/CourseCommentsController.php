@@ -28,7 +28,9 @@ class CourseCommentsController extends Controller
     public function store(Request $request, Course $course)
     {
         $user = Auth::user();
-        if (!$user) {
+
+        if (!$user) 
+        {
             return redirect('/register');
         }
 
@@ -38,26 +40,32 @@ class CourseCommentsController extends Controller
         ]);
 
         $validated['user_id'] = $user->id;
+
         $validated['course_id'] = $course->id;
 
         CourseComment::create($validated);
 
-        return back()->with('success', $request->parent_id ? 'Ответ добавлен!' : 'Комментарий добавлен!');
+        return back();
     }
 
     public function destroy(Course $course, CourseComment $comment)
     {
         $user = Auth::user();
-        if (!$user) {
+        
+        if (!$user)
+        {
             return redirect('/register');
         }
 
-        if ($user->id !== $comment->user_id && $user->role !== 'admin') {
-            return back()->with('error', 'Нет прав на удаление.');
+        if ($user->id !== $comment->user_id && $user->role !== 'admin')
+        {
+            return back();
         }
+
         $comment->replies()->delete();
+
         $comment->delete();
 
-        return back()->with('success', 'Комментарий удалён!');
+        return back();
     }
 }

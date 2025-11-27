@@ -12,7 +12,9 @@ class ModuleController extends Controller
     public function show(Course $course, Module $module)
     {
         $user = Auth::user();
-        if (!$user) {
+
+        if (!$user)
+        {
             return redirect('/register');
         }
 
@@ -21,10 +23,13 @@ class ModuleController extends Controller
         $canEdit = (($user->role === 'teacher' && $user->id === $module->course->teacher_id) || $user->role === 'admin');
 
         $totalLessons = 0;
+
         $completedLessons = 0;
+
         $progress = 0;
 
-        if ($user->role === 'student') {
+        if ($user->role === 'student')
+        {
             $totalLessons = $module->lessons->count();
             $completedLessons = $module->lessons->filter(fn($lesson) => $lesson->isCompletedByUser($user))->count();
             $progress = $totalLessons > 0 ? round(($completedLessons / $totalLessons) * 100) : 0;
@@ -36,7 +41,9 @@ class ModuleController extends Controller
     public function create(Course $course)
     {
         $user = Auth::user();
-        if ($user->role !== 'teacher' && $user->role !== 'admin') {
+
+        if ($user->role !== 'teacher' && $user->role !== 'admin')
+        {
             return view('errors.403');
         }
 
@@ -48,7 +55,9 @@ class ModuleController extends Controller
     public function save(Request $request, Course $course)
     {
         $user = Auth::user();
-        if ($user->role !== 'teacher' && $user->role !== 'admin') {
+
+        if ($user->role !== 'teacher' && $user->role !== 'admin')
+        {
             return view('errors.403');
         }
 
@@ -59,15 +68,18 @@ class ModuleController extends Controller
         ]);
 
         $validated['course_id'] = $course->id;
+
         Module::create($validated);
 
-        return redirect()->route('showCourse', $course)->with('success', 'Модуль добавлен!');
+        return redirect()->route('showCourse', $course);
     }
 
     public function edit(Course $course, Module $module)
     {
         $user = Auth::user();
-        if (($user->role === 'teacher' && $user->id !== $module->course->teacher_id) || $user->role === 'student') {
+
+        if (($user->role === 'teacher' && $user->id !== $module->course->teacher_id) || $user->role === 'student')
+        {
             return view('errors.403');
         }
 
@@ -77,7 +89,9 @@ class ModuleController extends Controller
     public function update(Request $request, Course $course, Module $module)
     {
         $user = Auth::user();
-        if (($user->role === 'teacher' && $user->id !== $course->teacher_id) || $user->role === 'student') {
+
+        if (($user->role === 'teacher' && $user->id !== $course->teacher_id) || $user->role === 'student')
+        {
             return view('errors.403');
         }
 
@@ -89,21 +103,25 @@ class ModuleController extends Controller
 
         $module->update($validated);
 
-        return redirect()->route('showCourse', $course)->with('success', 'Модуль обновлён!');
+        return redirect()->route('showCourse', $course);
     }
 
     public function delete(Course $course, Module $module)
     {
         $user = Auth::user();
-        if ($user->role === 'teacher' && $user->id !== $course->teacher_id) {
+
+        if ($user->role === 'teacher' && $user->id !== $course->teacher_id)
+        {
             return view('errors.403');
         }
-        if ($user->role === 'student') {
+
+        if ($user->role === 'student')
+        {
             return view('errors.403');
         }
 
         $module->delete();
 
-        return redirect()->route('showCourse', $course)->with('success', 'Модуль удалён!');
+        return redirect()->route('showCourse', $course);
     }
 }

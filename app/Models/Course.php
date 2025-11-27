@@ -51,13 +51,15 @@ class Course extends Model
         return $this->hasMany(CourseComment::class);
     }
 
-    public function getProgressForUser(User $user): int {
+    public function getProgressForUser(User $user): int 
+    {
         $total = $this->lessons()->count();
         $completed = $this->lessons()->whereHas('completions', fn($q) => $q->where('user_id', $user->id))->count();
         return $total > 0 ? round(($completed / $total) * 100) : 0;
     }
 
-    public function isCompletedByUser(User $user): bool {
+    public function isCompletedByUser(User $user): bool 
+    {
         $progress = $this->getProgressForUser($user);
         return $progress === 100;
     }

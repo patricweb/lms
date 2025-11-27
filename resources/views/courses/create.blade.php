@@ -8,19 +8,19 @@
                 @csrf
                 <div>
                     <label for="title" class="block text-gray-300 mb-1">Title:</label>
-                    <input type="text" name="title" id="title" required class="w-full p-3 rounded-xl bg-gray-900 text-white border border-gray-600 focus:outline-none focus:ring-2 focus:ring-emerald-500">
+                    <input type="text" name="title" id="title" required class="w-full p-3 rounded-xl bg-gray-900 text-white border border-gray-600">
                 </div>
                 <div>
                     <label for="description" class="block text-gray-300 mb-1">Description:</label>
-                    <textarea name="description" id="description" required rows="4" class="w-full p-3 rounded-xl bg-gray-900 text-white border border-gray-600 focus:outline-none focus:ring-2 focus:ring-emerald-500"></textarea>
+                    <textarea name="description" id="description" required rows="4" class="w-full p-3 rounded-xl bg-gray-900 text-white border border-gray-600"></textarea>
                 </div>
                 <div>
                     <label for="price" class="block text-gray-300 mb-1">Price:</label>
-                    <input type="number" name="price" id="price" min="0" class="w-full p-3 rounded-xl bg-gray-900 text-white border border-gray-600 focus:outline-none focus:ring-2 focus:ring-emerald-500">
+                    <input type="number" name="price" id="price" min="0" class="w-full p-3 rounded-xl bg-gray-900 text-white border border-gray-600">
                 </div>
                 <div>
                     <label for="category_id" class="block text-gray-300 mb-1">Category:</label>
-                    <select name="category_id" id="category_id" required class="w-full p-3 rounded-xl bg-gray-900 text-white border border-gray-600 focus:outline-none focus:ring-2 focus:ring-emerald-500">
+                    <select name="category_id" id="category_id" required class="w-full p-3 rounded-xl bg-gray-900 text-white border border-gray-600">
                         @foreach ($categories as $category)
                             <option value="{{ $category->id }}">{{ $category->name }}</option>
                         @endforeach

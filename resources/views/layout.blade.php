@@ -6,13 +6,15 @@
     <title>EduLMS - Modern Learning Platform</title>
 
     @vite(['resources/css/app.css'])
+
     @livewireStyles
 </head>
-<body class="font-sans bg-[#182023] text-[#f4f4f4] antialiased">
+<body class="font-sans bg-[#182023] text-[#f4f4f4] antialiased min-h-screen flex flex-col">
     @livewire("header")
+
     @livewire("nav")
-    
-    <main>
+
+    <main class="flex-1">
         @yield("main")
     </main>
 
