@@ -24,18 +24,18 @@
                 <div class="bg-[#182023] border border-gray-700 rounded-2xl p-6 mb-6">
                     {!! $lesson->content !!}
                 </div>
-                    @if($lesson->completions()->where('user_id', $user->id)->exists())
-                        <div class="bg-emerald-500 text-white px-6 py-3 rounded-xl font-medium inline-flex items-center gap-2 mb-6">
-                            Урок завершён!
-                        </div>
-                    @else
-                        <form method="POST" action="{{ route('completeLesson', ['course' => $course, 'lesson' => $lesson->id]) }}" class="mb-6">
-                            @csrf
-                            <button type="submit" class="bg-[#7cdebe] hover:bg-emerald-400 text-gray-900 px-6 py-3 rounded-xl font-medium transition-all duration-200 transform hover:scale-105">
-                                Отметить как пройденный
-                            </button>
-                        </form>
-                    @endif
+                @if($lesson->completions()->where('user_id', $user->id)->exists())
+                <div class="bg-emerald-500 text-white px-6 py-3 rounded-xl font-medium inline-flex items-center gap-2 mb-6">
+                    Урок завершён!
+                </div>
+                @else
+                <form method="POST" action="{{ route('completeLesson', ['course' => $course, 'lesson' => $lesson->id]) }}" class="mb-6">
+                    @csrf
+                    <button type="submit" class="bg-[#7cdebe] hover:bg-emerald-400 text-gray-900 px-6 py-3 rounded-xl font-medium transition-all duration-200 transform hover:scale-105">
+                        Отметить как пройденный
+                    </button>
+                </form>
+                @endif
                 @if($canEdit)
                 <div class="flex gap-3 mb-6">
                     <a href="{{ route('editLesson', ['course' => $course, 'module' => $module, 'lesson' => $lesson]) }}" class="bg-emerald-500 hover:bg-emerald-600 text-gray-900 px-6 py-3 rounded-xl font-medium transition-all duration-200">

@@ -29,8 +29,7 @@
                     <input type="checkbox" name="remember" id="remember" class="accent-emerald-500">
                     <label for="remember" class="text-gray-300 text-sm">Remember me</label>
                 </div>
-                <button type="submit"
-                        class="w-full py-3 bg-emerald-500 text-black font-semibold rounded-xl hover:bg-emerald-600 transition mt-3">
+                <button type="submit" class="w-full py-3 bg-emerald-500 text-black font-semibold rounded-xl hover:bg-emerald-600 transition mt-3">
                     Login
                 </button>
             </form>

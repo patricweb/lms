@@ -22,8 +22,7 @@
                     @error('description') <p class="text-red-500 text-sm mt-1">{{ $message }}</p> @enderror
                 </div>
                 <div class="flex gap-3 mt-4">
-                    <button type="submit"
-                            class="bg-emerald-500 hover:bg-emerald-600 text-white font-medium px-6 py-2 rounded-lg transition transform hover:scale-105 shadow hover:shadow-emerald-500/25">
+                    <button type="submit" class="bg-emerald-500 hover:bg-emerald-600 text-white font-medium px-6 py-2 rounded-lg transition transform hover:scale-105 shadow hover:shadow-emerald-500/25">
                         Создать
                     </button>
                     <a href="{{ route('categoriesIndex') }}" class="bg-gray-600 hover:bg-gray-700 text-white font-medium px-6 py-2 rounded-lg transition transform hover:scale-105 shadow hover:shadow-gray-700/25">

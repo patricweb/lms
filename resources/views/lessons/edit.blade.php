@@ -10,7 +10,6 @@
                 @csrf
                 @method('PUT')
                 <div class="flex flex-col gap-6">
-
                     <div class="space-y-4">
                         <div>
                             <label for="title" class="block text-gray-300 mb-1">Название урока</label>
