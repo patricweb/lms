@@ -17,10 +17,6 @@
                     <p><strong>Длительность:</strong> {{ $lesson->duration }} мин</p>
                 </div>
             </div>
-            @if($lesson->video_url)
-            <div class="relative w-full overflow-hidden rounded-xl mb-8" style="padding-top: 56.25%;">
-                <iframe class="absolute inset-0 w-full h-full rounded-xl" src="{{ $lesson->video_url) }}" allowfullscreen></iframe>
-            </div>
             @endif
             <div class="bg-[#162026] border border-gray-600 rounded-2xl p-6 mb-8 text-gray-200 content-style">
                 {!! $lesson->content !!}
