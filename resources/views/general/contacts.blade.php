@@ -6,8 +6,7 @@
             <div class="relative left-1/2 -z-10 aspect-1155/678 w-144.5 max-w-none -translate-x-1/2 rotate-30 opacity-20 sm:left-[calc(50%-40rem)] sm:w-288.75"></div>
         </div>
         <div class="mx-auto max-w-2xl text-center">
-            <h2 class="text-4xl font-semibold tracking-tight text-balance text-white sm:text-5xl">Contact sales</h2>
-            <p class="mt-2 text-lg/8 text-gray-400">Aute magna irure deserunt veniam aliqua magna enim voluptate.</p>
+            <h2 class="text-4xl font-semibold tracking-tight text-balance text-white sm:text-5xl">Contact</h2>
         </div>
         <form class="mx-auto mt-16 max-w-xl sm:mt-20">
             <div class="grid grid-cols-1 gap-x-8 gap-y-6 sm:grid-cols-2">
