@@ -2,7 +2,7 @@
 
 @section("main")
     <div class="min-h-screen py-10">
-        <div class="container mx-auto px-4 border border-gray-700 rounded-2xl bg-[#111827] p-8">
+        <div class="container mx-auto px-4 border border-gray-700 rounded-2xl p-8">
             <h1 class="text-4xl md:text-5xl font-bold mb-4 text-white">{{ $lesson->title }}</h1>
             <p class="text-gray-400 mb-6 text-sm">
                 Модуль:
