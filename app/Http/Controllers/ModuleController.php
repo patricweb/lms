@@ -18,7 +18,16 @@ class ModuleController extends Controller
             return redirect('/register');
         }
 
-        $module->load('lessons', 'course');
+        $module->load([
+            'lessons' => function ($query) use ($user) 
+            {
+                $query->with(['completions' => function ($q) use ($user) 
+                {
+                    $q->where('user_id', $user->id);
+                }]);
+            },
+            'course'
+        ]);
 
         $canEdit = (($user->role === 'teacher' && $user->id === $module->course->teacher_id) || $user->role === 'admin');
 

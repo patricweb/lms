@@ -65,10 +65,19 @@
 										<div class="flex flex-col lg:flex-row lg:items-center justify-between gap-5">
 											<a href="{{ route('showLesson', ['course' => $module->course, 'module' => $module, 'lesson' => $lesson]) }}" class="flex-1 block">
 												<div class="flex items-start gap-4">
-													<div class="w-12 h-12 bg-gray-700 rounded-xl flex items-center justify-center">
+													<div class="relative w-12 h-12 bg-gray-700 rounded-xl flex items-center justify-center">
 														<span class="text-xl font-bold text-white">
 															{{ $lesson->order ?? $lessonIndex + 1 }}
 														</span>
+														@auth
+															@if($lesson->isCompletedByUser($user))
+																<div class="absolute -top-1 -right-1 w-6 h-6 bg-emerald-500 rounded-full flex items-center justify-center">
+																	<svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+																		<path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"/>
+																	</svg>
+																</div>
+															@endif
+														@endauth
 													</div>
 													<div class="flex-1 min-w-0">
 														<h4 class="text-lg sm:text-xl font-semibold text-white truncate">
@@ -83,21 +92,6 @@
 											</a>
 											<div class="flex flex-wrap items-center gap-3">
 												@auth
-													@if(!$lesson->isCompletedByUser($user))
-														<form method="POST" action="{{ route('completeLesson', ['course' => $module->course, 'lesson' => $lesson->id]) }}" class="inline">
-															@csrf
-															<button type="submit" class="bg-[#7cdebe] hover:bg-emerald-400 text-black font-bold px-5 py-2.5 rounded-xl text-sm transition transform hover:scale-105">
-																Завершить
-															</button>
-														</form>
-													@else
-														<div class="bg-emerald-600 text-white px-5 py-2.5 rounded-xl font-medium text-sm inline-flex items-center gap-2">
-															<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-																<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
-															</svg>
-															Завершено
-														</div>
-													@endif
 													@if(!empty($canEdit) && $canEdit)
 														<a href="{{ route('editLesson', ['course' => $module->course, 'module' => $module, 'lesson' => $lesson]) }}" class="bg-emerald-500 hover:bg-emerald-600 text-black font-bold px-4 py-2 rounded-xl text-sm transition">
 															Редактировать

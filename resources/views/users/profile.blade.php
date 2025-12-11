@@ -80,6 +80,68 @@
                             @endforelse
                         </div>
                     </div>
+                    @if($user->role === 'student' && isset($enrolledCourses))
+                        <div>
+                            <h2 class="text-xl lg:text-2xl font-semibold text-white mb-6">Мои курсы</h2>
+                            <div class="space-y-4">
+                                @forelse($enrolledCourses as $course)
+                                    @php $progress = $course->getProgressForUser($user); @endphp
+                                    <div class="flex flex-col sm:flex-row items-start sm:items-center gap-4 py-5 px-4 rounded-xl hover:bg-[#1a1c1d] transition-all border border-transparent hover:border-gray-700">
+                                        @if($course->thumbnail)
+                                            <img src="{{ asset('storage/' . $course->thumbnail) }}" class="w-full sm:w-24 lg:w-32 h-20 sm:h-16 lg:h-20 rounded-lg object-cover">
+                                        @endif
+                                        <div class="flex-1 w-full">
+                                            <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
+                                                <h3 class="text-white font-medium text-lg">{{ $course->title }}</h3>
+                                                <a href="{{ route('showCourse', $course) }}" class="text-[#7cdebe] text-sm hover:underline whitespace-nowrap">
+                                                    Открыть
+                                                </a>
+                                            </div>
+                                            <div class="mt-3">
+                                                <div class="w-full h-2 bg-gray-700 rounded-full overflow-hidden">
+                                                    <div class="h-2 bg-[#7cdebe] transition-all duration-700" style="width: {{ $progress }}%"></div>
+                                                </div>
+                                                <p class="text-gray-500 text-xs mt-2">{{ $progress }}% завершено</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                @empty
+                                    <p class="text-gray-500 italic">Вы еще не записались ни на один курс</p>
+                                @endforelse
+                            </div>
+                        </div>
+                    @endif
+                    @if(isset($favoriteCourses))
+                        <div>
+                            <h2 class="text-xl lg:text-2xl font-semibold text-white mb-6">Избранные курсы</h2>
+                            <div class="space-y-4">
+                                @forelse($favoriteCourses as $course)
+                                    @php $progress = $course->getProgressForUser($user); @endphp
+                                    <div class="flex flex-col sm:flex-row items-start sm:items-center gap-4 py-5 px-4 rounded-xl hover:bg-[#1a1c1d] transition-all border border-transparent hover:border-gray-700">
+                                        @if($course->thumbnail)
+                                            <img src="{{ asset('storage/' . $course->thumbnail) }}" class="w-full sm:w-24 lg:w-32 h-20 sm:h-16 lg:h-20 rounded-lg object-cover">
+                                        @endif
+                                        <div class="flex-1 w-full">
+                                            <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
+                                                <h3 class="text-white font-medium text-lg">{{ $course->title }}</h3>
+                                                <a href="{{ route('showCourse', $course) }}" class="text-[#7cdebe] text-sm hover:underline whitespace-nowrap">
+                                                    Открыть
+                                                </a>
+                                            </div>
+                                            <div class="mt-3">
+                                                <div class="w-full h-2 bg-gray-700 rounded-full overflow-hidden">
+                                                    <div class="h-2 bg-[#7cdebe] transition-all duration-700" style="width: {{ $progress }}%"></div>
+                                                </div>
+                                                <p class="text-gray-500 text-xs mt-2">{{ $progress }}% завершено</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                @empty
+                                    <p class="text-gray-500 italic">Пока нет избранных курсов</p>
+                                @endforelse
+                            </div>
+                        </div>
+                    @endif
                     <div>
                         <h2 class="text-xl lg:text-2xl font-semibold text-white mb-6">Completed</h2>
                         <div class="space-y-4">
@@ -91,13 +153,54 @@
                                         <p class="text-gray-500 text-xs mt-1">
                                             Completed: {{ $date?->format('M d, Y') ?? '-' }}
                                         </p>
+                                        @if($course->hasCertificateForUser($user))
+                                            <a href="{{ route('certificates.index') }}" class="text-emerald-400 text-xs mt-1 inline-block hover:underline">
+                                                Сертификат доступен
+                                            </a>
+                                        @endif
                                     </div>
+                                    <div class="flex gap-2">
                                     <a href="{{ route('showCourse', $course->id) }}" class="text-[#7cdebe] text-sm hover:underline whitespace-nowrap">
                                         View
                                     </a>
+                                        @if($course->hasCertificateForUser($user))
+                                            <a href="{{ route('certificates.index') }}" class="text-emerald-400 text-sm hover:underline whitespace-nowrap">
+                                                Сертификат
+                                            </a>
+                                        @endif
+                                    </div>
                                 </div>
                             @empty
                                 <p class="text-gray-500 italic">No completed courses yet</p>
+                            @endforelse
+                        </div>
+                    </div>
+                    <div>
+                        <div class="flex justify-between items-center mb-6">
+                            <h2 class="text-xl lg:text-2xl font-semibold text-white">Мои сертификаты</h2>
+                            <a href="{{ route('certificates.index') }}" class="text-[#7cdebe] text-sm hover:underline">
+                                Все сертификаты →
+                            </a>
+                        </div>
+                        @php
+                            $userCertificates = $user->certificates()->with('course')->orderBy('issued_at', 'desc')->limit(3)->get();
+                        @endphp
+                        <div class="space-y-4">
+                            @forelse($userCertificates as $cert)
+                                <div class="flex justify-between items-center py-5 px-4 rounded-xl hover:bg-[#1a1c1d] transition-all border border-transparent hover:border-gray-700">
+                                    <div>
+                                        <h3 class="text-white font-medium text-lg">{{ $cert->course->title }}</h3>
+                                        <p class="text-gray-500 text-xs mt-1">
+                                            Выдан: {{ $cert->issued_at->format('d.m.Y') }}
+                                        </p>
+                                        <p class="text-gray-600 text-xs mt-1 font-mono">#{{ $cert->certificate_number }}</p>
+                                    </div>
+                                    <a href="{{ route('certificates.show', $cert) }}" class="text-[#7cdebe] text-sm hover:underline whitespace-nowrap">
+                                        Просмотр
+                                    </a>
+                                </div>
+                            @empty
+                                <p class="text-gray-500 italic">У вас пока нет сертификатов</p>
                             @endforelse
                         </div>
                     </div>

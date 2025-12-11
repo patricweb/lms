@@ -10,6 +10,7 @@ use App\Http\Controllers\LessonController;
 use App\Http\Controllers\ModuleController;
 use App\Http\Controllers\LessonCommentsController;
 use App\Http\Controllers\CourseCommentsController;
+use App\Http\Controllers\CertificateController;
 
 Route::get("/", [GeneralController::class, "landing"])->name("landing");
 Route::get("/contacts", [GeneralController::class, "contacts"])->name("contacts");
@@ -38,6 +39,13 @@ Route::post("/courses/save", [CourseController::class, "save"])->name("saveCours
 Route::get("/courses/edit/{course}", [CourseController::class, "edit"])->name("editCourse");
 Route::put('/courses/edit/{course}', [CourseController::class, 'update'])->name('updateCourse');
 Route::get("/courses/{course}", [CourseController::class, 'show'])->name('showCourse');
+Route::get("/courses/{course}/enrollments", [CourseController::class, 'enrollments'])->name('courseEnrollments');
+Route::post("/courses/{course}/enroll", [CourseController::class, 'enroll'])->name('enrollCourse');
+Route::post("/courses/{course}/unenroll", [CourseController::class, 'unenroll'])->name('unenrollCourse');
+Route::post("/courses/{course}/favorite", [CourseController::class, 'favorite'])->name('favoriteCourse');
+Route::post("/courses/{course}/unfavorite", [CourseController::class, 'unfavorite'])->name('unfavoriteCourse');
+Route::post("/courses/{course}/enrollments/{enrollment}/approve", [CourseController::class, 'approveEnrollment'])->name('approveEnrollment');
+Route::post("/courses/{course}/enrollments/{enrollment}/reject", [CourseController::class, 'rejectEnrollment'])->name('rejectEnrollment');
 Route::delete('/courses/{course}', [CourseController::class, 'destroy'])->name('destroyCourse');
 Route::post('courses/{course}/lessons/{lesson}/complete', [LessonController::class, 'complete'])->name('completeLesson');
 Route::get("/courses/{course}/modules/create", [ModuleController::class, "create"])->name("createModule");
@@ -49,6 +57,7 @@ Route::delete('courses/{course}/modules/{module}', [ModuleController::class, 'de
 Route::get('courses/{course}/modules/{module}/lessons/create', [LessonController::class, 'create'])->name('createLesson');
 Route::post('courses/{course}/modules/{module}/lessons', [LessonController::class, 'store'])->name('storeLesson');
 Route::get('courses/{course}/modules/{module}/lessons/{lesson}', [LessonController::class, 'show'])->name('showLesson');
+Route::get('courses/{course}/modules/{module}/lessons/{lesson}/next', [LessonController::class, 'nextLesson'])->name('nextLesson');
 Route::get('courses/{course}/modules/{module}/lessons/{lesson}/edit', [LessonController::class, 'edit'])->name('editLesson');
 Route::put('courses/{course}/modules/{module}/lessons/{lesson}', [LessonController::class, 'update'])->name('updateLesson');
 Route::delete('courses/{course}/modules/{module}/lessons/{lesson}', [LessonController::class, 'destroy'])->name('deleteLesson');
@@ -60,5 +69,9 @@ Route::delete('courses/{course}/modules/{module}/lessons/{lesson}/comments/{comm
 Route::get('courses/{course}/comments', [CourseCommentsController::class, 'index'])->name('courseComments.index');
 Route::post('courses/{course}/comments', [CourseCommentsController::class, 'store'])->name('storeCourseComment');
 Route::delete('courses/{course}/comments/{comment}', [CourseCommentsController::class, 'destroy'])->name('deleteCourseComment');
+
+Route::get('/certificates', [CertificateController::class, 'index'])->name('certificates.index');
+Route::get('/certificates/{certificate}', [CertificateController::class, 'show'])->name('certificates.show');
+Route::post('/courses/{course}/certificate/generate', [CertificateController::class, 'generate'])->name('certificates.generate');
 
 Route::fallback(function () { return response()->view('errors.404', [], 404); });

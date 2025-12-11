@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use App\Models\Course;
 use App\Models\User;
+use App\Models\Enrollment;
 
 class UserController extends Controller
 {
@@ -61,9 +62,22 @@ class UserController extends Controller
             })
             : collect();
 
+        $enrolledCourses = $user->role === 'student' 
+            ? Course::whereHas('enrollments', function($q) use ($user) {
+                $q->where('user_id', $user->id)->where('status', 'active');
+            })->with(['category', 'teacher', 'lessons' => fn($q) =>
+                $q->with(['completions' => fn($cq) => $cq->where('user_id', $user->id)])
+            ])->get()
+            : collect();
+
+        $favoriteCourses = $user->favoriteCourses()
+            ->with(['category', 'teacher', 'lessons' => fn($q) =>
+                $q->with(['completions' => fn($cq) => $cq->where('user_id', $user->id)])
+            ])->get();
+
         $editMode = request()->get('edit', false);
 
-        return view('users.profile', compact('user', 'startedCourses', 'completedCourses', 'createdCourses', 'editMode'));
+        return view('users.profile', compact('user', 'startedCourses', 'completedCourses', 'createdCourses', 'editMode', 'enrolledCourses', 'favoriteCourses'));
     }
 
     public function update(Request $request)

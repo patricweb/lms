@@ -8,6 +8,8 @@ use App\Models\Lesson;
 use App\Models\Completion;
 use App\Models\Course;
 use App\Models\Module;
+use App\Models\Enrollment;
+use App\Models\Certificate;
 
 class LessonController extends Controller
 {
@@ -18,6 +20,16 @@ class LessonController extends Controller
         if (!$user) 
         {
             return redirect('/register');
+        }
+
+        $canEdit = (($user->role === 'teacher' && $user->id === $course->teacher_id) || $user->role === 'admin');
+        $isEnrolled = $course->isEnrolledByUser($user);
+        $isTeacherOrAdmin = ($user->role === 'teacher' && $user->id === $course->teacher_id) || $user->role === 'admin';
+        $hasAccess = $isTeacherOrAdmin || $isEnrolled || $lesson->is_free_preview;
+
+        if (!$hasAccess && $user->role === 'student') 
+        {
+            return redirect()->route('showCourse', $course);
         }
 
         $lesson->load([
@@ -38,9 +50,88 @@ class LessonController extends Controller
             }
         ]);
 
-        $canEdit = (($user->role === 'teacher' && $user->id === $course->teacher_id) || $user->role === 'admin');
+        $previousLesson = $this->getPreviousLesson($course, $lesson);
+        $nextLesson = $this->getNextLesson($course, $lesson);
 
-        return view('lessons.show', compact('lesson', 'module', 'course', 'canEdit', 'user'));
+        return view('lessons.show', compact('lesson', 'module', 'course', 'canEdit', 'user', 'hasAccess', 'previousLesson', 'nextLesson'));
+    }
+
+    private function getPreviousLesson(Course $course, Lesson $currentLesson)
+    {
+        $allLessons = $course->lessons()->orderBy('order')->get();
+        
+        $currentIndex = $allLessons->search(function ($lesson) use ($currentLesson) 
+        {
+            return $lesson->id === $currentLesson->id;
+        });
+
+        if ($currentIndex === false || $currentIndex === 0) 
+        {
+            return null;
+        }
+
+        return $allLessons[$currentIndex - 1];
+    }
+
+    private function getNextLesson(Course $course, Lesson $currentLesson)
+    {
+        $allLessons = $course->lessons()->orderBy('order')->get();
+        
+        $currentIndex = $allLessons->search(function ($lesson) use ($currentLesson) 
+        {
+            return $lesson->id === $currentLesson->id;
+        });
+
+        if ($currentIndex === false || $currentIndex === $allLessons->count() - 1) 
+        {
+            return null;
+        }
+
+        return $allLessons[$currentIndex + 1];
+    }
+
+    public function nextLesson(Course $course, Module $module, Lesson $lesson)
+    {
+        $user = Auth::user();
+
+        if (!$user) 
+        {
+            return redirect('/login');
+        }
+
+        $canEdit = (($user->role === 'teacher' && $user->id === $course->teacher_id) || $user->role === 'admin');
+        $isEnrolled = $course->isEnrolledByUser($user);
+        $isTeacherOrAdmin = ($user->role === 'teacher' && $user->id === $course->teacher_id) || $user->role === 'admin';
+        $hasAccess = $isTeacherOrAdmin || $isEnrolled || $lesson->is_free_preview;
+
+        if (!$hasAccess && $user->role === 'student') 
+        {
+            return redirect()->route('showCourse', $course);
+        }
+
+        if (!$lesson->completions()->where('user_id', $user->id)->exists()) 
+        {
+            Completion::create([
+                'user_id' => $user->id,
+                'lesson_id' => $lesson->id,
+                'completed_at' => now(),
+            ]);
+        }
+
+        $nextLesson = $this->getNextLesson($course, $lesson);
+
+        if ($nextLesson) 
+        {
+            $nextModule = $nextLesson->module;
+            
+            return redirect()->route('showLesson', [
+                'course' => $course,
+                'module' => $nextModule,
+                'lesson' => $nextLesson
+            ]);
+        }
+
+        return redirect()->route('showCourse', $course);
     }
 
     public function create(Course $course, Module $module)
@@ -177,6 +268,16 @@ class LessonController extends Controller
             'lesson_id' => $lesson->id,
             'completed_at' => now(),
         ]);
+
+        $course = $lesson->course;
+        if ($course->isCompletedByUser($user) && !$course->hasCertificateForUser($user)) {
+            $certificate = Certificate::create([
+                'user_id' => $user->id,
+                'course_id' => $course->id,
+                'certificate_number' => Certificate::generateCertificateNumber(),
+                'issued_at' => now(),
+            ]);
+        }
 
         return back();
     }

@@ -4,9 +4,12 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
 use App\Models\Course;
 use App\Models\Category;
 use App\Models\User;
+use App\Models\Enrollment;
+use App\Models\Favorite;
 
 class CourseController extends Controller
 {
@@ -111,11 +114,22 @@ class CourseController extends Controller
             {
                 $q->where('is_published', true)->orWhere('teacher_id', $user->id);
             });
-        } elseif ($user->role === 'student') 
+        } else        if ($user->role === 'student') 
         {
             $query->where('is_published', true);
         }
-
+        if ($request->my_courses && $user->role === 'student')
+        {
+            $enrolledCourseIds = Enrollment::where('user_id', $user->id)
+                ->where('status', 'active')
+                ->pluck('course_id');
+            $query->whereIn('id', $enrolledCourseIds);
+        }
+        if ($request->favorites)
+        {
+            $favoriteCourseIds = Favorite::where('user_id', $user->id)->pluck('course_id');
+            $query->whereIn('id', $favoriteCourseIds);
+        }
         if ($user->role === 'teacher' || $user->role === 'admin')
         {
             if ($request->my_only)
@@ -152,6 +166,13 @@ class CourseController extends Controller
 
         $courses = $query->paginate(9)->withQueryString();
 
+        foreach ($courses as $course) {
+            $course->progress = $course->getProgressForUser($user);
+            $course->isCompleted = $course->isCompletedByUser($user);
+            $course->isEnrolled = $course->isEnrolledByUser($user);
+            $course->isFavorite = $course->isFavoritedByUser($user);
+        }
+
         $categories = Category::all();
 
         return view('courses.index', compact('courses', 'user', 'categories', 'teachers'));
@@ -169,7 +190,11 @@ class CourseController extends Controller
         $course->load([
             'teacher',
             'category',
-            'modules.lessons',
+            'modules.lessons' => function ($query) use ($user) {
+                $query->with(['completions' => function ($q) use ($user) {
+                    $q->where('user_id', $user->id);
+                }]);
+            },
             'courseComments' => function ($query) {
                 $query->with([
                     'user',
@@ -187,7 +212,36 @@ class CourseController extends Controller
 
         $canEdit = (($user->role === 'teacher' && $user->id === $course->teacher_id) || $user->role === 'admin');
 
-        return view('courses.show', compact('course', 'progress', 'isCompleted', 'canEdit', 'user'));
+        $isEnrolled = $course->isEnrolledByUser($user);
+        $isPending = $course->enrollments()
+            ->where('user_id', $user->id)
+            ->where('status', 'pending')
+            ->exists();
+        $isFavorite = $course->isFavoritedByUser($user);
+
+        $hasAccess = $isEnrolled || ($user->role === 'teacher' && $user->id === $course->teacher_id) || $user->role === 'admin';
+
+        if (!$hasAccess && $user->role === 'student') {
+            foreach ($course->modules as $module) {
+                $module->lessons = $module->lessons->filter(function($lesson) {
+                    return $lesson->is_free_preview;
+                });
+                if ($module->lessons->isEmpty()) {
+                    $module->should_hide = true;
+                }
+            }
+            $course->modules = $course->modules->filter(function($module) {
+                return !($module->should_hide ?? false);
+            });
+        }
+        foreach ($course->modules as $module) {
+            foreach ($module->lessons as $lesson) {
+                $lesson->can_access = $hasAccess || $lesson->is_free_preview;
+            }
+        }
+        $pendingEnrollmentsCount = ($user->role === 'teacher' && $user->id === $course->teacher_id) || $user->role === 'admin' ? $course->enrollments()->where('status', 'pending')->count() : 0;
+
+        return view('courses.show', compact('course', 'progress', 'isCompleted', 'canEdit', 'user', 'isEnrolled', 'isPending', 'isFavorite', 'hasAccess', 'pendingEnrollmentsCount'));
     }
 
     public function create()
@@ -311,5 +365,212 @@ class CourseController extends Controller
         $course->delete();
 
         return redirect()->route('courses');
+    }
+
+    public function enroll(Course $course)
+    {
+        $user = Auth::user();
+
+        if (!$user) 
+        {
+            return redirect('/login');
+        }
+        if ($user->role === 'teacher' && $user->id === $course->teacher_id) 
+        {
+            return redirect()->route('showCourse', $course);
+        }
+        if ($course->isEnrolledByUser($user)) 
+        {
+            return redirect()->route('showCourse', $course);
+        }
+
+        $existingEnrollment = Enrollment::where('user_id', $user->id)
+            ->where('course_id', $course->id)
+            ->first();
+
+        if ($existingEnrollment) 
+        {
+            $existingEnrollment->update([
+                'status' => 'pending',
+                'enrolled_at' => now()
+            ]);
+        } 
+        else 
+        {
+            Enrollment::create([
+                'user_id' => $user->id,
+                'course_id' => $course->id,
+                'enrolled_at' => now(),
+                'status' => 'pending'
+            ]);
+        }
+
+        return redirect()->route('showCourse', $course);
+    }
+
+    public function unenroll(Course $course)
+    {
+        $user = Auth::user();
+
+        if (!$user) 
+        {
+            return redirect('/login');
+        }
+
+        $enrollment = Enrollment::where('user_id', $user->id)
+            ->where('course_id', $course->id)
+            ->where('status', 'active')
+            ->first();
+
+        if ($enrollment) 
+        {
+            $enrollment->update(['status' => 'cancelled']);
+            
+            return redirect()->route('courses');
+        }
+
+        return redirect()->route('showCourse', $course);
+    }
+
+    public function enrollments(Course $course)
+    {
+        $user = Auth::user();
+
+        if (!$user) 
+        {
+            return redirect('/login');
+        }
+
+        if (!(($user->role === 'teacher' && $user->id === $course->teacher_id) || $user->role === 'admin')) 
+        {
+            return response()->view('errors.403');
+        }
+
+        $pendingEnrollments = $course->enrollments()
+            ->where('status', 'pending')
+            ->with('user')
+            ->orderBy('created_at', 'desc')
+            ->paginate(20);
+
+        $activeEnrollments = $course->enrollments()
+            ->where('status', 'active')
+            ->with('user')
+            ->orderBy('enrolled_at', 'desc')
+            ->paginate(20);
+
+        $cancelledEnrollments = $course->enrollments()
+            ->where('status', 'cancelled')
+            ->with('user')
+            ->orderBy('updated_at', 'desc')
+            ->paginate(20);
+
+        return view('courses.enrollments', compact('course', 'pendingEnrollments', 'activeEnrollments', 'cancelledEnrollments', 'user'));
+    }
+
+    public function approveEnrollment(Course $course, Enrollment $enrollment)
+    {
+        $user = Auth::user();
+
+        if (!$user) 
+        {
+            return redirect('/login');
+        }
+
+        if (!(($user->role === 'teacher' && $user->id === $course->teacher_id) || $user->role === 'admin')) 
+        {
+            return response()->view('errors.403');
+        }
+
+        if ($enrollment->course_id !== $course->id) 
+        {
+            return response()->view('errors.403');
+        }
+
+        $enrollment->update([
+            'status' => 'active',
+            'enrolled_at' => now()
+        ]);
+
+        return redirect()->route('courseEnrollments', $course);
+    }
+
+    public function rejectEnrollment(Course $course, Enrollment $enrollment)
+    {
+        $user = Auth::user();
+
+        if (!$user) 
+        {
+            return redirect('/login');
+        }
+
+        if (!(($user->role === 'teacher' && $user->id === $course->teacher_id) || $user->role === 'admin')) 
+        {
+            return response()->view('errors.403');
+        }
+
+        if ($enrollment->course_id !== $course->id) 
+        {
+            return response()->view('errors.403');
+        }
+
+        $enrollment->update(['status' => 'cancelled']);
+
+        return redirect()->route('courseEnrollments', $course);
+    }
+
+    public function favorite(Course $course, Request $request)
+    {
+        $user = Auth::user();
+
+        if (!$user) 
+        {
+            if ($request->wantsJson() || $request->expectsJson()) 
+            {
+                return response()->json(['message' => 'Unauthorized'], 401);
+            }
+            return redirect('/login');
+        }
+
+        Favorite::firstOrCreate([
+            'user_id' => $user->id,
+            'course_id' => $course->id,
+        ]);
+
+        if ($request->wantsJson() || $request->expectsJson() || $request->ajax()) 
+        {
+            return response()->json([
+                'success' => true,
+                'is_favorite' => true,
+            ]);
+        }
+
+        return redirect()->back();
+    }
+
+    public function unfavorite(Course $course, Request $request)
+    {
+        $user = Auth::user();
+
+        if (!$user) 
+        {
+            if ($request->wantsJson() || $request->expectsJson()) 
+            {
+                return response()->json(['message' => 'Unauthorized'], 401);
+            }
+            return redirect('/login');
+        }
+
+        Favorite::where('user_id', $user->id)
+            ->where('course_id', $course->id)
+            ->delete();
+
+        if ($request->wantsJson() || $request->expectsJson() || $request->ajax()) {
+            return response()->json([
+                'success' => true,
+                'is_favorite' => false,
+            ]);
+        }
+
+        return redirect()->back();
     }
 }
