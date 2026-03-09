@@ -14,6 +14,7 @@ if (search && searchResults) {
                     if (data.courses.length > 0 || data.categories.length > 0) {
                         searchResults.classList.remove("hidden")
 
+                        // Courses
                         data.courses.forEach((course) => {
                             const courseElement = document.createElement('a')
                             courseElement.href = course.url
@@ -43,6 +44,7 @@ if (search && searchResults) {
                             searchResults.appendChild(courseElement)
                         })
 
+                        // Categories
                         data.categories.forEach((category) => {
                             const categoryElement = document.createElement('a')
                             categoryElement.href = category.url
@@ -67,6 +69,7 @@ if (search && searchResults) {
         }
     })
 
+    // Скрывать результаты при клике вне
     document.addEventListener('click', (e) => {
         if (!search.contains(e.target) && !searchResults.contains(e.target)) {
             searchResults.classList.add('hidden')

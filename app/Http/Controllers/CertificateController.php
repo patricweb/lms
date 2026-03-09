@@ -13,8 +13,7 @@ class CertificateController extends Controller
     {
         $user = Auth::user();
 
-        if (!$user) 
-        {
+        if (!$user) {
             return redirect('/login');
         }
 
@@ -30,13 +29,11 @@ class CertificateController extends Controller
     {
         $user = Auth::user();
 
-        if (!$user) 
-        {
+        if (!$user) {
             return redirect('/login');
         }
 
-        if ($certificate->user_id !== $user->id) 
-        {
+        if ($certificate->user_id !== $user->id) {
             return response()->view('errors.403', [], 403);
         }
 
@@ -53,16 +50,15 @@ class CertificateController extends Controller
             return redirect('/login');
         }
 
-        if (!$course->isCompletedByUser($user)) 
-        {
-            return redirect()->route('showCourse', $course);
+        if (!$course->isCompletedByUser($user)) {
+            return redirect()->route('showCourse', $course)
+                ->with('error', 'Для получения сертификата необходимо завершить курс на 100%');
         }
 
-        if ($course->hasCertificateForUser($user)) 
-        {
+        if ($course->hasCertificateForUser($user)) {
             $certificate = $course->certificates()->where('user_id', $user->id)->first();
-
-            return redirect()->route('certificates.show', $certificate);
+            return redirect()->route('certificates.show', $certificate)
+                ->with('info', 'У вас уже есть сертификат за этот курс');
         }
 
         $certificate = Certificate::create([
@@ -72,6 +68,7 @@ class CertificateController extends Controller
             'issued_at' => now(),
         ]);
 
-        return redirect()->route('certificates.show', $certificate);
+        return redirect()->route('certificates.show', $certificate)
+            ->with('success', 'Сертификат успешно создан!');
     }
 }

@@ -22,14 +22,21 @@ class LessonController extends Controller
             return redirect('/register');
         }
 
+        // Проверка доступа к уроку
         $canEdit = (($user->role === 'teacher' && $user->id === $course->teacher_id) || $user->role === 'admin');
         $isEnrolled = $course->isEnrolledByUser($user);
         $isTeacherOrAdmin = ($user->role === 'teacher' && $user->id === $course->teacher_id) || $user->role === 'admin';
+        
+        // Доступ есть если:
+        // 1. Преподаватель/админ своего курса
+        // 2. Студент записан на курс
+        // 3. Урок бесплатный превью
         $hasAccess = $isTeacherOrAdmin || $isEnrolled || $lesson->is_free_preview;
 
         if (!$hasAccess && $user->role === 'student') 
         {
-            return redirect()->route('showCourse', $course);
+            return redirect()->route('showCourse', $course)
+                ->with('error', 'Для доступа к этому уроку необходимо записаться на курс');
         }
 
         $lesson->load([
@@ -50,40 +57,39 @@ class LessonController extends Controller
             }
         ]);
 
+        // Навигация: предыдущий и следующий урок
         $previousLesson = $this->getPreviousLesson($course, $lesson);
         $nextLesson = $this->getNextLesson($course, $lesson);
 
         return view('lessons.show', compact('lesson', 'module', 'course', 'canEdit', 'user', 'hasAccess', 'previousLesson', 'nextLesson'));
     }
 
-    private function getPreviousLesson(Course $course, Lesson $currentLesson)
+    private function getPreviousLesson(Course $course, Lesson $currentLesson): ?Lesson
     {
+        // Получаем все уроки курса, отсортированные по порядку
         $allLessons = $course->lessons()->orderBy('order')->get();
         
-        $currentIndex = $allLessons->search(function ($lesson) use ($currentLesson) 
-        {
+        $currentIndex = $allLessons->search(function ($lesson) use ($currentLesson) {
             return $lesson->id === $currentLesson->id;
         });
 
-        if ($currentIndex === false || $currentIndex === 0) 
-        {
+        if ($currentIndex === false || $currentIndex === 0) {
             return null;
         }
 
         return $allLessons[$currentIndex - 1];
     }
 
-    private function getNextLesson(Course $course, Lesson $currentLesson)
+    private function getNextLesson(Course $course, Lesson $currentLesson): ?Lesson
     {
+        // Получаем все уроки курса, отсортированные по порядку
         $allLessons = $course->lessons()->orderBy('order')->get();
         
-        $currentIndex = $allLessons->search(function ($lesson) use ($currentLesson) 
-        {
+        $currentIndex = $allLessons->search(function ($lesson) use ($currentLesson) {
             return $lesson->id === $currentLesson->id;
         });
 
-        if ($currentIndex === false || $currentIndex === $allLessons->count() - 1) 
-        {
+        if ($currentIndex === false || $currentIndex === $allLessons->count() - 1) {
             return null;
         }
 
@@ -99,6 +105,7 @@ class LessonController extends Controller
             return redirect('/login');
         }
 
+        // Проверка доступа к уроку
         $canEdit = (($user->role === 'teacher' && $user->id === $course->teacher_id) || $user->role === 'admin');
         $isEnrolled = $course->isEnrolledByUser($user);
         $isTeacherOrAdmin = ($user->role === 'teacher' && $user->id === $course->teacher_id) || $user->role === 'admin';
@@ -106,9 +113,11 @@ class LessonController extends Controller
 
         if (!$hasAccess && $user->role === 'student') 
         {
-            return redirect()->route('showCourse', $course);
+            return redirect()->route('showCourse', $course)
+                ->with('error', 'Для доступа к этому уроку необходимо записаться на курс');
         }
 
+        // Автоматически завершаем текущий урок, если еще не завершен
         if (!$lesson->completions()->where('user_id', $user->id)->exists()) 
         {
             Completion::create([
@@ -118,10 +127,12 @@ class LessonController extends Controller
             ]);
         }
 
+        // Получаем следующий урок
         $nextLesson = $this->getNextLesson($course, $lesson);
 
         if ($nextLesson) 
         {
+            // Находим модуль следующего урока
             $nextModule = $nextLesson->module;
             
             return redirect()->route('showLesson', [
@@ -131,7 +142,9 @@ class LessonController extends Controller
             ]);
         }
 
-        return redirect()->route('showCourse', $course);
+        // Если следующего урока нет, возвращаемся к курсу
+        return redirect()->route('showCourse', $course)
+            ->with('success', 'Поздравляем! Вы завершили все уроки этого курса!');
     }
 
     public function create(Course $course, Module $module)
@@ -269,14 +282,18 @@ class LessonController extends Controller
             'completed_at' => now(),
         ]);
 
+        // Проверяем, завершен ли курс полностью
         $course = $lesson->course;
         if ($course->isCompletedByUser($user) && !$course->hasCertificateForUser($user)) {
+            // Генерируем сертификат
             $certificate = Certificate::create([
                 'user_id' => $user->id,
                 'course_id' => $course->id,
                 'certificate_number' => Certificate::generateCertificateNumber(),
                 'issued_at' => now(),
             ]);
+            
+            // Можно добавить уведомление или редирект на страницу сертификата
         }
 
         return back();

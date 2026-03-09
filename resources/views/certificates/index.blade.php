@@ -9,6 +9,7 @@
                 </h1>
                 <p class="text-gray-400">Ваши достижения и завершённые курсы</p>
             </div>
+            
             @if($certificates->isEmpty())
                 <div class="bg-[#18181b] rounded-2xl border border-gray-700 p-12 text-center max-w-2xl mx-auto">
                     <div class="w-24 h-24 bg-emerald-500/10 rounded-full flex items-center justify-center mx-auto mb-6">
@@ -18,7 +19,7 @@
                     </div>
                     <h3 class="text-2xl font-semibold text-white mb-3">Пока нет сертификатов</h3>
                     <p class="text-gray-400 mb-6">Завершите курсы на 100%, чтобы получить сертификаты об окончании</p>
-                    <a href="{{ route('courses') }}" class="inline-flex items-center gap-2 px-6 py-3 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl font-medium transition shadow-lg shadow-emerald-500/20">
+                    <a href="{{ route('courses') }}" class="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-emerald-500 to-emerald-600 hover:from-emerald-600 hover:to-emerald-700 text-white rounded-xl font-medium transition shadow-lg shadow-emerald-500/20">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"/>
                         </svg>
@@ -28,7 +29,7 @@
             @else
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                     @foreach($certificates as $certificate)
-                        <div class="group bg-[#18181b] rounded-2xl border border-gray-700 overflow-hidden hover:border-emerald-500/50 transition-all duration-300 hover:shadow-xl hover:shadow-emerald-500/10 transform hover:-translate-y-1">
+                        <div class="group bg-gradient-to-br from-[#18181b] to-[#1a1a1d] rounded-2xl border border-gray-700 overflow-hidden hover:border-emerald-500/50 transition-all duration-300 hover:shadow-xl hover:shadow-emerald-500/10 transform hover:-translate-y-1">
                             <div class="p-6">
                                 <div class="flex items-start justify-between mb-4">
                                     <div class="relative">
@@ -45,15 +46,18 @@
                                     </div>
                                     <span class="text-xs text-gray-500 font-mono bg-gray-800 px-2 py-1 rounded">#{{ substr($certificate->certificate_number, -8) }}</span>
                                 </div>
+                                
                                 <h3 class="text-xl font-bold text-white mb-2 line-clamp-2 group-hover:text-emerald-400 transition-colors">
                                     {{ $certificate->course->title }}
                                 </h3>
+                                
                                 <div class="flex items-center gap-2 text-gray-400 text-sm mb-4">
                                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
                                     </svg>
                                     <span>Выдан: {{ $certificate->issued_at->format('d.m.Y') }}</span>
                                 </div>
+                                
                                 @if($certificate->course->category)
                                     <div class="mb-4">
                                         <span class="inline-flex items-center gap-1 px-3 py-1 bg-gray-800 text-gray-300 text-xs rounded-full">
@@ -64,8 +68,9 @@
                                         </span>
                                     </div>
                                 @endif
+                                
                                 <div class="flex gap-2 mt-4">
-                                    <a href="{{ route('certificates.show', $certificate) }}" class="flex-1 px-4 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg font-medium text-center transition shadow-md shadow-emerald-500/20 hover:shadow-lg hover:shadow-emerald-500/30 hover:scale-105">
+                                    <a href="{{ route('certificates.show', $certificate) }}" class="flex-1 px-4 py-2.5 bg-gradient-to-r from-emerald-500 to-emerald-600 hover:from-emerald-600 hover:to-emerald-700 text-white rounded-lg font-medium text-center transition shadow-md shadow-emerald-500/20">
                                         Просмотр
                                     </a>
                                 </div>

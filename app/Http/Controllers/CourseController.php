@@ -10,6 +10,7 @@ use App\Models\Category;
 use App\Models\User;
 use App\Models\Enrollment;
 use App\Models\Favorite;
+use Symfony\Component\HttpFoundation\Response;
 
 class CourseController extends Controller
 {
@@ -118,6 +119,8 @@ class CourseController extends Controller
         {
             $query->where('is_published', true);
         }
+
+        // Фильтр "Мои курсы" - только записанные курсы
         if ($request->my_courses && $user->role === 'student')
         {
             $enrolledCourseIds = Enrollment::where('user_id', $user->id)
@@ -125,11 +128,14 @@ class CourseController extends Controller
                 ->pluck('course_id');
             $query->whereIn('id', $enrolledCourseIds);
         }
+
+        // Фильтр избранного
         if ($request->favorites)
         {
             $favoriteCourseIds = Favorite::where('user_id', $user->id)->pluck('course_id');
             $query->whereIn('id', $favoriteCourseIds);
         }
+
         if ($user->role === 'teacher' || $user->role === 'admin')
         {
             if ($request->my_only)
@@ -166,6 +172,7 @@ class CourseController extends Controller
 
         $courses = $query->paginate(9)->withQueryString();
 
+        // Добавляем прогресс для каждого курса
         foreach ($courses as $course) {
             $course->progress = $course->getProgressForUser($user);
             $course->isCompleted = $course->isCompletedByUser($user);
@@ -212,34 +219,50 @@ class CourseController extends Controller
 
         $canEdit = (($user->role === 'teacher' && $user->id === $course->teacher_id) || $user->role === 'admin');
 
+        // Проверяем запись на курс
         $isEnrolled = $course->isEnrolledByUser($user);
         $isPending = $course->enrollments()
             ->where('user_id', $user->id)
             ->where('status', 'pending')
             ->exists();
         $isFavorite = $course->isFavoritedByUser($user);
+        
+        // Преподаватели и админы имеют доступ к своим курсам
+        $hasAccess = $isEnrolled || 
+                     ($user->role === 'teacher' && $user->id === $course->teacher_id) || 
+                     $user->role === 'admin';
 
-        $hasAccess = $isEnrolled || ($user->role === 'teacher' && $user->id === $course->teacher_id) || $user->role === 'admin';
-
+        // Для незаписанных студентов показываем только бесплатные превью уроки
         if (!$hasAccess && $user->role === 'student') {
             foreach ($course->modules as $module) {
+                // Фильтруем уроки - оставляем только бесплатные превью
                 $module->lessons = $module->lessons->filter(function($lesson) {
                     return $lesson->is_free_preview;
                 });
+                
+                // Если в модуле нет бесплатных превью, скрываем модуль
                 if ($module->lessons->isEmpty()) {
                     $module->should_hide = true;
                 }
             }
+            
+            // Убираем модули без бесплатных превью
             $course->modules = $course->modules->filter(function($module) {
                 return !($module->should_hide ?? false);
             });
         }
+
+        // Добавляем информацию о доступе к каждому уроку
         foreach ($course->modules as $module) {
             foreach ($module->lessons as $lesson) {
                 $lesson->can_access = $hasAccess || $lesson->is_free_preview;
             }
         }
-        $pendingEnrollmentsCount = ($user->role === 'teacher' && $user->id === $course->teacher_id) || $user->role === 'admin' ? $course->enrollments()->where('status', 'pending')->count() : 0;
+
+        // Количество заявок в ожидании для отображения автору курса/админу
+        $pendingEnrollmentsCount = ($user->role === 'teacher' && $user->id === $course->teacher_id) || $user->role === 'admin'
+            ? $course->enrollments()->where('status', 'pending')->count()
+            : 0;
 
         return view('courses.show', compact('course', 'progress', 'isCompleted', 'canEdit', 'user', 'isEnrolled', 'isPending', 'isFavorite', 'hasAccess', 'pendingEnrollmentsCount'));
     }
@@ -375,21 +398,29 @@ class CourseController extends Controller
         {
             return redirect('/login');
         }
+
+        // Преподаватели и админы автоматически имеют доступ к своим курсам
         if ($user->role === 'teacher' && $user->id === $course->teacher_id) 
         {
-            return redirect()->route('showCourse', $course);
-        }
-        if ($course->isEnrolledByUser($user)) 
-        {
-            return redirect()->route('showCourse', $course);
+            return redirect()->route('showCourse', $course)
+                ->with('info', 'Вы являетесь преподавателем этого курса');
         }
 
+        // Проверяем, не записан ли уже
+        if ($course->isEnrolledByUser($user)) 
+        {
+            return redirect()->route('showCourse', $course)
+                ->with('info', 'Вы уже записаны на этот курс');
+        }
+
+        // Проверяем существующую запись (в т.ч. pending/cancelled)
         $existingEnrollment = Enrollment::where('user_id', $user->id)
             ->where('course_id', $course->id)
             ->first();
 
         if ($existingEnrollment) 
         {
+            // Обновляем существующую запись
             $existingEnrollment->update([
                 'status' => 'pending',
                 'enrolled_at' => now()
@@ -397,6 +428,7 @@ class CourseController extends Controller
         } 
         else 
         {
+            // Создаем новую запись
             Enrollment::create([
                 'user_id' => $user->id,
                 'course_id' => $course->id,
@@ -405,7 +437,8 @@ class CourseController extends Controller
             ]);
         }
 
-        return redirect()->route('showCourse', $course);
+        return redirect()->route('showCourse', $course)
+            ->with('success', 'Заявка отправлена. Ожидайте одобрения преподавателем/администратором.');
     }
 
     public function unenroll(Course $course)
@@ -426,7 +459,8 @@ class CourseController extends Controller
         {
             $enrollment->update(['status' => 'cancelled']);
             
-            return redirect()->route('courses');
+            return redirect()->route('courses')
+                ->with('success', 'Вы отписались от курса');
         }
 
         return redirect()->route('showCourse', $course);
@@ -441,11 +475,13 @@ class CourseController extends Controller
             return redirect('/login');
         }
 
+        // Проверяем права доступа
         if (!(($user->role === 'teacher' && $user->id === $course->teacher_id) || $user->role === 'admin')) 
         {
-            return response()->view('errors.403');
+            return response()->view('errors.403', [], 403);
         }
 
+        // Загружаем заявки с информацией о пользователях
         $pendingEnrollments = $course->enrollments()
             ->where('status', 'pending')
             ->with('user')
@@ -471,19 +507,16 @@ class CourseController extends Controller
     {
         $user = Auth::user();
 
-        if (!$user) 
-        {
+        if (!$user) {
             return redirect('/login');
         }
 
-        if (!(($user->role === 'teacher' && $user->id === $course->teacher_id) || $user->role === 'admin')) 
-        {
-            return response()->view('errors.403');
+        if (!(($user->role === 'teacher' && $user->id === $course->teacher_id) || $user->role === 'admin')) {
+            return response()->view('errors.403', [], Response::HTTP_FORBIDDEN);
         }
 
-        if ($enrollment->course_id !== $course->id) 
-        {
-            return response()->view('errors.403');
+        if ($enrollment->course_id !== $course->id) {
+            return response()->view('errors.403', [], Response::HTTP_FORBIDDEN);
         }
 
         $enrollment->update([
@@ -491,41 +524,38 @@ class CourseController extends Controller
             'enrolled_at' => now()
         ]);
 
-        return redirect()->route('courseEnrollments', $course);
+        return redirect()->route('courseEnrollments', $course)
+            ->with('success', 'Заявка от ' . $enrollment->user->name . ' одобрена');
     }
 
     public function rejectEnrollment(Course $course, Enrollment $enrollment)
     {
         $user = Auth::user();
 
-        if (!$user) 
-        {
+        if (!$user) {
             return redirect('/login');
         }
 
-        if (!(($user->role === 'teacher' && $user->id === $course->teacher_id) || $user->role === 'admin')) 
-        {
-            return response()->view('errors.403');
+        if (!(($user->role === 'teacher' && $user->id === $course->teacher_id) || $user->role === 'admin')) {
+            return response()->view('errors.403', [], Response::HTTP_FORBIDDEN);
         }
 
-        if ($enrollment->course_id !== $course->id) 
-        {
-            return response()->view('errors.403');
+        if ($enrollment->course_id !== $course->id) {
+            return response()->view('errors.403', [], Response::HTTP_FORBIDDEN);
         }
 
         $enrollment->update(['status' => 'cancelled']);
 
-        return redirect()->route('courseEnrollments', $course);
+        return redirect()->route('courseEnrollments', $course)
+            ->with('success', 'Заявка от ' . $enrollment->user->name . ' отклонена');
     }
 
     public function favorite(Course $course, Request $request)
     {
         $user = Auth::user();
 
-        if (!$user) 
-        {
-            if ($request->wantsJson() || $request->expectsJson()) 
-            {
+        if (!$user) {
+            if ($request->wantsJson() || $request->expectsJson()) {
                 return response()->json(['message' => 'Unauthorized'], 401);
             }
             return redirect('/login');
@@ -536,25 +566,22 @@ class CourseController extends Controller
             'course_id' => $course->id,
         ]);
 
-        if ($request->wantsJson() || $request->expectsJson() || $request->ajax()) 
-        {
+        if ($request->wantsJson() || $request->expectsJson() || $request->ajax()) {
             return response()->json([
                 'success' => true,
                 'is_favorite' => true,
             ]);
         }
 
-        return redirect()->back();
+        return redirect()->back()->with('success', 'Курс добавлен в избранное');
     }
 
     public function unfavorite(Course $course, Request $request)
     {
         $user = Auth::user();
 
-        if (!$user) 
-        {
-            if ($request->wantsJson() || $request->expectsJson()) 
-            {
+        if (!$user) {
+            if ($request->wantsJson() || $request->expectsJson()) {
                 return response()->json(['message' => 'Unauthorized'], 401);
             }
             return redirect('/login');
@@ -571,6 +598,6 @@ class CourseController extends Controller
             ]);
         }
 
-        return redirect()->back();
+        return redirect()->back()->with('success', 'Курс удалён из избранного');
     }
 }

@@ -62,6 +62,7 @@ class UserController extends Controller
             })
             : collect();
 
+        // Записанные курсы для студентов
         $enrolledCourses = $user->role === 'student' 
             ? Course::whereHas('enrollments', function($q) use ($user) {
                 $q->where('user_id', $user->id)->where('status', 'active');
@@ -70,6 +71,7 @@ class UserController extends Controller
             ])->get()
             : collect();
 
+        // Избранные курсы
         $favoriteCourses = $user->favoriteCourses()
             ->with(['category', 'teacher', 'lessons' => fn($q) =>
                 $q->with(['completions' => fn($cq) => $cq->where('user_id', $user->id)])
